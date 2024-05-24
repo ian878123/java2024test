@@ -6,7 +6,7 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 
 public class GUI extends JFrame implements ItemListener, ActionListener {
-    label labels=new label("labels");
+    Label labels=new Label("labels");
     public GUI(){
         super("Time Line");
         JPanel topPanel = new JPanel();

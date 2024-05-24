@@ -1,6 +1,6 @@
-public class res {
+public class Res {
     private String name;
-    res(String name){
+    Res(String name){
         this.name=name;
     }
 

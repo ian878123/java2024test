@@ -1,10 +1,10 @@
 import java.util.ArrayList;
 
-public class label {
+public class Label {
     private String name;
     private ArrayList<People> members;
     private int num=0;
-    label(String name){
+    Label(String name){
         this.name=name;
     }
 
