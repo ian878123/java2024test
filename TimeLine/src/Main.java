@@ -1,6 +1,13 @@
+import javax.swing.*;
+import java.lang.runtime.SwitchBootstraps;
+
 public class Main {
     public static void main(String[] args) {
-
-        System.out.println("Hello world!");
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                GUI frame = new GUI();
+                frame.setVisible(true);
+            }
+        });
     }
 }

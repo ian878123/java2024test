@@ -1,16 +1,18 @@
-import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
+import javax.swing.JFrame;
 
 public class GUI extends JFrame implements ItemListener, ActionListener {
     Label labels=new Label("labels");
     public GUI(){
         super("Time Line");
-        JPanel topPanel = new JPanel();
-
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        setSize(screenSize.width,screenSize.height);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
     }
 
     public void itemStateChanged(ItemEvent e) {
