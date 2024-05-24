@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Label {
     private String name;
-    private ArrayList<People> members;
+    private ArrayList<Ob> members;
     private int num=0;
     Label(String name){
         this.name=name;
@@ -16,11 +16,12 @@ public class Label {
         return name;
     }
 
-    public void newMember(People member){
+    public void newMember(Ob member){
         members.add(member);
         num++;
     }
-    public ArrayList<People> getMembers(){
+
+    public ArrayList<Ob> getMembers(){
         return members;
     }
 }

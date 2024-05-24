@@ -1,4 +1,4 @@
-public class People {
+public class People extends Ob{
     private String name;
     People(String name){
         this.name=name;
