@@ -4,24 +4,35 @@ public class Event {
     private Color color;
     private final Label insidePeople;
     private final Label insideRes;
-    Event(String name){
-        insidePeople =new Label(name);
+    private String name;
+    Event(String n, Color c){
+        name=n;
+        insidePeople=new Label(name);
         insideRes=new Label(name);
+        color=c;
     }
 
-    void addNewMember(People p){
+    public void addNewMember(People p){
         insidePeople.newMember(p);
     }
 
-    void addNewMember(Res r){
+    public void addNewMember(Res r){
         insideRes.newMember(r);
     }
 
-    Label getInsidePeople(){
+    public Label getInsidePeople(){
         return insidePeople;
     }
 
-    Label getInsideRes(){
+    public Label getInsideRes(){
         return insideRes;
     }
+
+    public String getName(){return name;}
+
+    public void setDrawingColor(Color c) {
+        color=c;
+    }
+
+    public Color getColor(){ return color;}
 }

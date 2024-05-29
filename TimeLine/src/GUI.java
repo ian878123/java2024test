@@ -1,12 +1,28 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 import javax.swing.*;
 
 public class GUI extends JFrame {
+    //base
     private  Label labels=new Label("labels");
     private String[] labelNames = {"無隸屬"};
     private final String[] colorNames = { "Blue", "Cyan", "Gray", "Green", "Magenta", "Orange", "Pink", "Red", "Yellow", "White", "Black" };
+    private  final Color[] colors={Color.BLUE,Color.CYAN,Color.GRAY,Color.GREEN,Color.MAGENTA,Color.ORANGE,Color.PINK,Color.RED,Color.YELLOW,Color.WHITE,Color.BLACK};
+    private Event[] events=new Event[50];
+    private String[] eventNames=new String[50];
+    private int eventCount=0;
+    //for Listeners
+    private JTextField eventInput;
+    private JComboBox<String> eventColorChoices;
+    private JButton eventButton;
+
+    private JPanel labelPanel;
+    private JComboBox<String> labelChoices;
+
+    private JTextField choicesTextField;
+    //GUI constructor
     public GUI(){
         //GUI建立
         super("Time Line");
@@ -31,13 +47,13 @@ public class GUI extends JFrame {
         eventLabel.setOpaque(true);
         eventLabel.setBackground(Color.PINK);
         eventPanel.add(eventLabel);
-        JTextField eventInput=new JTextField("Enter name here",5);
+        eventInput=new JTextField("Enter name here",5);
         eventInput.addActionListener(new MyEventListener());
         eventPanel.add(eventInput);
-        JComboBox<String> eventColorChoices=new JComboBox<String>(colorNames);
+        eventColorChoices=new JComboBox<String>(colorNames);
         eventColorChoices.addActionListener(new MyEventListener());
         eventPanel.add(eventColorChoices);
-        JButton eventButton=new JButton("Create");
+        eventButton=new JButton("Create");
         eventButton.addActionListener(new MyEventListener());
         eventPanel.add(eventButton);
         eventPanel.add(Box.createVerticalStrut(0));eventPanel.add(Box.createVerticalStrut(0));
@@ -64,9 +80,9 @@ public class GUI extends JFrame {
         objectPanel.add(new CustomSeparator(Color.BLACK, 3));objectPanel.add(new CustomSeparator(Color.BLACK, 3));
         rightPanel.add(objectPanel);
         //右:標籤查詢
-        JPanel labelPanel=new JPanel(new GridLayout(3,2));
+        labelPanel=new JPanel(new GridLayout(3,2));
         labelPanel.setBackground(Color.PINK);
-        JComboBox<String> labelChoices=new JComboBox<String>(colorNames);
+        labelChoices=new JComboBox<String>(eventNames);
         labelChoices.addActionListener(new MyLabelListener());
         labelPanel.add(labelChoices);
         JButton labelButton=new JButton("Search");
@@ -81,7 +97,7 @@ public class GUI extends JFrame {
         JLabel choicesLabel=new JLabel("What you are selecting now is:");
         choicesLabel.setFont(new Font("Arial",Font.PLAIN,20));
         choicesPanel.add(choicesLabel);
-        JTextField choicesTextField=new JTextField("now selecting event");
+        choicesTextField=new JTextField("now selecting event");
         choicesTextField.setBackground(Color.LIGHT_GRAY);
         choicesTextField.setEditable(false);
         choicesPanel.add(choicesTextField);
@@ -107,7 +123,7 @@ public class GUI extends JFrame {
         //右:選取事件(下)
         JPanel choicesBottomPanel=new JPanel(new GridLayout(5,1));
         choicesBottomPanel.setBackground(Color.PINK);
-        JButton renewButton=new JButton("Renew event");
+        JButton renewButton=new JButton("Update event");
         renewButton.addActionListener(new MyChoicesListener());
         choicesBottomPanel.add(renewButton);
         choicesBottomPanel.add(Box.createVerticalStrut(0));
@@ -132,6 +148,7 @@ public class GUI extends JFrame {
         splitPane.setDividerLocation((int) (screenSize.width * 0.8));
         splitPane.setEnabled(false);
         add(splitPane);
+
     }
     class CustomSeparator extends JSeparator{//建立黑線
         private Color color;
@@ -150,10 +167,23 @@ public class GUI extends JFrame {
             g.fillRect(0, 0, getWidth(), thickness);
         }
     }
-    private class MyEventListener implements ActionListener{//所有關於建立新事件的事件監聽器
+    class MyEventListener implements ActionListener {//所有關於建立新事件的事件監聽器
         @Override
         public void actionPerformed(ActionEvent e){
+            if(e.getSource()==eventButton){
+                Event newEvent=new Event(eventInput.getText(),colors[eventColorChoices.getSelectedIndex()]);
+                events[eventCount]=newEvent;
+                eventNames[eventCount]=newEvent.getName();
+                choicesTextField.setText(eventNames[eventCount]+eventCount);
+                eventCount++;
 
+                labelPanel.remove(labelChoices);
+                labelChoices=new JComboBox<String>(eventNames);
+                labelChoices.addActionListener(new MyLabelListener());
+                labelPanel.add(labelChoices, 0);
+                labelPanel.revalidate();
+                labelPanel.repaint();
+            }
         }
     }
     private class MyObjectListener implements ActionListener{//所有關於添加新物件的事件監聽器
@@ -175,9 +205,13 @@ public class GUI extends JFrame {
         }
     }
     private class MySaveListener implements ActionListener{//所有關於存檔讀檔的事件監聽器
+        String tmp="";
         @Override
         public void actionPerformed(ActionEvent e){
-
+            for(int i=0;i<eventCount;i++){
+                tmp+=events[i].getName()+":"+events[i].getColor()+"\n";
+            }
+            JOptionPane.showMessageDialog(null,tmp);
         }
     }
 }
