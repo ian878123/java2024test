@@ -1,27 +1,41 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Objects;
 import javax.swing.*;
 
 public class GUI extends JFrame {
     //base
-    private  Label labels=new Label("labels");
-    private String[] labelNames = {"無隸屬"};
+    private Label labels=new Label("labels");
+    private JPanel labelPanel;
+    private ArrayList<String> labelNames;
     private final String[] colorNames = { "Blue", "Cyan", "Gray", "Green", "Magenta", "Orange", "Pink", "Red", "Yellow", "White", "Black" };
-    private  final Color[] colors={Color.BLUE,Color.CYAN,Color.GRAY,Color.GREEN,Color.MAGENTA,Color.ORANGE,Color.PINK,Color.RED,Color.YELLOW,Color.WHITE,Color.BLACK};
-    private Event[] events=new Event[50];
-    private String[] eventNames=new String[50];
+    private final Color[] colors={Color.BLUE,Color.CYAN,Color.GRAY,Color.GREEN,Color.MAGENTA,Color.ORANGE,Color.PINK,Color.RED,Color.YELLOW,Color.WHITE,Color.BLACK};
+    private ArrayList<Event> events=new ArrayList<>();
+    private ArrayList<Ob> Obs=new ArrayList<>();
     private int eventCount=0;
-    //for Listeners
+    //新事件
     private JTextField eventInput;
     private JComboBox<String> eventColorChoices;
     private JButton eventButton;
+    //添加物件
 
-    private JPanel labelPanel;
+    //標籤查詢
     private JComboBox<String> labelChoices;
-
+    private ArrayList<String> eventNames;
+    private DefaultComboBoxModel<String> eventModel;
+    private JComboBox<String> objectChoices;
+    private ArrayList<String> objectNames;
+    private DefaultComboBoxModel<String> objectModel;
+    //選取事件
     private JTextField choicesTextField;
+    //新建物件 與 讀黨存檔
+    private JButton readButton;
+    private JButton newButton;
+    private JRadioButton peopleButton;
+    private JRadioButton resButton;
+    private JButton saveButton;
     //GUI constructor
     public GUI(){
         //GUI建立
@@ -60,7 +74,7 @@ public class GUI extends JFrame {
         eventPanel.add(new CustomSeparator(Color.BLACK, 2));eventPanel.add(new CustomSeparator(Color.BLACK, 2));
         rightPanel.add(eventPanel);
         //右:添加物件
-        JPanel objectPanel=new JPanel(new GridLayout(4,2));
+        JPanel objectPanel=new JPanel(new GridLayout(5,2));
         objectPanel.setBackground(Color.PINK);
         JLabel objectLabel=new JLabel("new object:");
         objectLabel.setFont(new Font("Arial",Font.PLAIN,25));
@@ -70,6 +84,17 @@ public class GUI extends JFrame {
         JTextField objectInput=new JTextField("Enter name here",5);
         objectInput.addActionListener(new MyObjectListener());
         objectPanel.add(objectInput);
+        ButtonGroup group=new ButtonGroup();
+        peopleButton=new JRadioButton("People",true);
+        resButton=new JRadioButton("Res",false);
+        group.add(peopleButton);
+        group.add(resButton);
+        peopleButton.addActionListener(new MyObjectListener());
+        peopleButton.setBackground(Color.PINK);
+        resButton.addActionListener(new MyObjectListener());
+        resButton.setBackground(Color.PINK);
+        objectPanel.add(peopleButton);
+        objectPanel.add(resButton);
         JComboBox<String> objectColorChoices=new JComboBox<String>(colorNames);
         objectColorChoices.addActionListener(new MyObjectListener());
         objectPanel.add(objectColorChoices);
@@ -80,14 +105,25 @@ public class GUI extends JFrame {
         objectPanel.add(new CustomSeparator(Color.BLACK, 3));objectPanel.add(new CustomSeparator(Color.BLACK, 3));
         rightPanel.add(objectPanel);
         //右:標籤查詢
-        labelPanel=new JPanel(new GridLayout(3,2));
+        labelPanel=new JPanel(new GridLayout(4,2));
         labelPanel.setBackground(Color.PINK);
-        labelChoices=new JComboBox<String>(eventNames);
-        labelChoices.addActionListener(new MyLabelListener());
+
+        eventNames=new ArrayList<>();
+        eventModel=new DefaultComboBoxModel<>(eventNames.toArray(new String[0]));
+        labelChoices=new JComboBox<>(eventModel);
         labelPanel.add(labelChoices);
-        JButton labelButton=new JButton("Search");
+        JButton labelButton=new JButton("Search label");
         labelButton.addActionListener(new MyLabelListener());
         labelPanel.add(labelButton);
+
+        objectNames=new ArrayList<>();
+        objectModel=new DefaultComboBoxModel<>(objectNames.toArray(new String[0]));
+        objectChoices=new JComboBox<>(objectModel);
+        labelPanel.add(objectChoices);
+        JButton addButton=new JButton("Insert Object");
+        addButton.addActionListener(new MyLabelListener());
+        labelPanel.add(addButton);
+
         labelPanel.add(Box.createVerticalStrut(0)); labelPanel.add(Box.createVerticalStrut(0));
         labelPanel.add(new CustomSeparator(Color.BLACK, 3));labelPanel.add(new CustomSeparator(Color.BLACK, 3));
         rightPanel.add(labelPanel);
@@ -133,13 +169,27 @@ public class GUI extends JFrame {
         choicesBottomPanel.add(Box.createVerticalStrut(0));
         choicesBottomPanel.add(new CustomSeparator(Color.BLACK, 3));
         rightPanel.add(choicesBottomPanel);
-        //右:讀黨存檔
-        JPanel savePanel=new JPanel(new GridLayout(1,2));
+        //右:新建物件 與 讀黨存檔
+        JPanel savePanel=new JPanel(new GridLayout(4,2));
         savePanel.setBackground(Color.PINK);
-        JButton saveButton =new JButton("Save");
+
+        JLabel tagLabel=new JLabel("Tag's name:");
+        tagLabel.setFont(new Font("Arial",Font.PLAIN,20));
+        savePanel.add(tagLabel);
+        JTextField tagTextField=new JTextField("enter name here");
+        tagTextField.addActionListener(new MySaveListener());
+        savePanel.add(tagTextField);
+        JLabel newLabel=new JLabel("Create new tag:");
+        newLabel.setFont(new Font("Arial",Font.PLAIN,17));
+        savePanel.add(newLabel);
+        newButton=new JButton("New Tag");
+        newButton.addActionListener(new MySaveListener());
+        savePanel.add(newButton);
+        savePanel.add(new CustomSeparator(Color.BLACK, 3));savePanel.add(new CustomSeparator(Color.BLACK, 3));
+        saveButton =new JButton("Save");
         saveButton.addActionListener(new MySaveListener());
         savePanel.add(saveButton);
-        JButton readButton =new JButton("Read");
+        readButton =new JButton("Read");
         readButton.addActionListener(new MySaveListener());
         savePanel.add(readButton);
         rightPanel.add(savePanel);
@@ -148,7 +198,6 @@ public class GUI extends JFrame {
         splitPane.setDividerLocation((int) (screenSize.width * 0.8));
         splitPane.setEnabled(false);
         add(splitPane);
-
     }
     class CustomSeparator extends JSeparator{//建立黑線
         private Color color;
@@ -170,19 +219,14 @@ public class GUI extends JFrame {
     class MyEventListener implements ActionListener {//所有關於建立新事件的事件監聽器
         @Override
         public void actionPerformed(ActionEvent e){
-            if(e.getSource()==eventButton){
+           if(e.getSource()==eventButton){
                 Event newEvent=new Event(eventInput.getText(),colors[eventColorChoices.getSelectedIndex()]);
-                events[eventCount]=newEvent;
-                eventNames[eventCount]=newEvent.getName();
-                choicesTextField.setText(eventNames[eventCount]+eventCount);
-                eventCount++;
+                events.add(newEvent);
+                eventNames.add(newEvent.getName());
+                eventModel.addElement(newEvent.getName());
 
-                labelPanel.remove(labelChoices);
-                labelChoices=new JComboBox<String>(eventNames);
-                labelChoices.addActionListener(new MyLabelListener());
-                labelPanel.add(labelChoices, 0);
-                labelPanel.revalidate();
-                labelPanel.repaint();
+                choicesTextField.setText(events.get(eventCount).getName()+":"+events.get(eventCount).getColor());//最後要刪掉
+                eventCount++;//最後要刪掉
             }
         }
     }
@@ -205,13 +249,33 @@ public class GUI extends JFrame {
         }
     }
     private class MySaveListener implements ActionListener{//所有關於存檔讀檔的事件監聽器
+        final int P=1;
+        final int R=0;
+        int PorR=P;
         String tmp="";
         @Override
         public void actionPerformed(ActionEvent e){
-            for(int i=0;i<eventCount;i++){
-                tmp+=events[i].getName()+":"+events[i].getColor()+"\n";
+            if(e.getSource()==newButton){
+                tmp="new!";
+                for(int i=0;i<eventCount;i++){
+                    tmp+=events.get(i).getName()+":"+events.get(i).getColor()+"\n";
+                }
+                JOptionPane.showMessageDialog(null,tmp);
             }
-            JOptionPane.showMessageDialog(null,tmp);
+            else if(e.getSource()==saveButton){
+                tmp="save!";
+                for(int i=0;i<eventCount;i++){
+                    tmp+=events.get(i).getName()+":"+events.get(i).getColor()+"\n";
+                }
+                JOptionPane.showMessageDialog(null,tmp);
+            }
+            else if(e.getSource()==readButton){
+                tmp="read!";
+                for(int i=0;i<eventCount;i++){
+                    tmp+=events.get(i).getName()+":"+events.get(i).getColor()+"\n";
+                }
+                JOptionPane.showMessageDialog(null,tmp);
+            }
         }
     }
 }
