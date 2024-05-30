@@ -35,6 +35,8 @@ public class GUI extends JFrame {
     private JComboBox<String> objectChoices;
     private ArrayList<String> objectNames;
     private DefaultComboBoxModel<String> objectModel;
+    JButton labelButton;
+    JButton addButton;
     //選取事件
     private JTextField choicesTextField;
     //新建標籤 與 讀黨存檔
@@ -48,7 +50,6 @@ public class GUI extends JFrame {
         super("Time Line");
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setSize(screenSize.width,screenSize.height);
-        GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(this);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tags.add(noAffiliation);
         //左側GUI
@@ -103,9 +104,9 @@ public class GUI extends JFrame {
         objectPanel.add(peopleButton);
         objectPanel.add(resButton);
         objectTagNames=new ArrayList<>();
+        objectTagNames.add("無隸屬");
         objectTagModel=new DefaultComboBoxModel<>(objectTagNames.toArray(new String[0]));
         objectTagChoices=new JComboBox<>(objectTagModel);
-        objectTagModel.addElement("無隸屬");
         objectPanel.add(objectTagChoices);
         objectButton=new JButton("Create");
         objectButton.addActionListener(new MyObjectListener());
@@ -116,21 +117,20 @@ public class GUI extends JFrame {
         //右:標籤查詢 與 插入物件
         labelPanel=new JPanel(new GridLayout(4,2));
         labelPanel.setBackground(Color.PINK);
-
         eventNames=new ArrayList<>();
-        eventModel=new DefaultComboBoxModel<>(eventNames.toArray(new String[0]));
+        eventNames.add("無隸屬");
+        eventModel=new DefaultComboBoxModel<>(objectTagNames.toArray(new String[0]));
         tagChoices=new JComboBox<>(eventModel);
         labelPanel.add(tagChoices);
-        JButton labelButton=new JButton("Search tag");
-        labelButton.addActionListener(new MyLabelListener());
+        labelButton=new JButton("Search tag");
+        labelButton.addActionListener(new MyTagListener());
         labelPanel.add(labelButton);
-
         objectNames=new ArrayList<>();
         objectModel=new DefaultComboBoxModel<>(objectNames.toArray(new String[0]));
         objectChoices=new JComboBox<>(objectModel);
         labelPanel.add(objectChoices);
-        JButton addButton=new JButton("Insert Object");
-        addButton.addActionListener(new MyLabelListener());
+        addButton=new JButton("Insert Object");
+        addButton.addActionListener(new MyTagListener());
         labelPanel.add(addButton);
 
         labelPanel.add(Box.createVerticalStrut(0)); labelPanel.add(Box.createVerticalStrut(0));
@@ -256,20 +256,31 @@ public class GUI extends JFrame {
                     Obs.add(newPeople);
                     objectNames.add(objectInput.getText());
                     objectModel.addElement("P:"+newPeople.getName());
+                    tags.get(objectTagChoices.getSelectedIndex()).newMember(newPeople);
                 }
                 else{
                     Res newRes=new Res(objectInput.getText());
                     Obs.add(newRes);
                     objectNames.add(objectInput.getText());
                     objectModel.addElement("R:"+newRes.getName());
+                    tags.get(objectTagChoices.getSelectedIndex()).newMember(newRes);
                 }
             }
         }
     }
-    private class MyLabelListener implements ActionListener{//所有關於查詢標籤的事件監聽器
+    private class MyTagListener implements ActionListener{//所有關於查詢標籤的事件監聽器
         @Override
         public void actionPerformed(ActionEvent e){
+            if(e.getSource()==labelButton){
+                searchGUI newSearchGUI=new searchGUI(tags.get(tagChoices.getSelectedIndex()));
+                newSearchGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                newSearchGUI.setSize(350,300);
+                newSearchGUI.setLocationRelativeTo(GUI.this);
+                newSearchGUI.setVisible(true);
+            }
+            else if (e.getSource()==addButton) {
 
+            }
         }
     }
     private class MyChoicesListener implements ActionListener{//所有關於選取事件的事件監聽器
@@ -283,7 +294,12 @@ public class GUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e){
             if(e.getSource()==newButton){
-                objectTagModel.addElement(tagTextField.getText());
+                Label newLabel=new Label(tagTextField.getText());
+                objectNames.add(newLabel.getName());
+                eventNames.add(newLabel.getName());
+                objectTagModel.addElement(newLabel.getName());
+                eventModel.addElement(newLabel.getName());
+                tags.add(newLabel);
             }
             else if(e.getSource()==saveButton){
                 tmp="save!";
