@@ -1,8 +1,14 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 public class GUI extends JFrame {
     //base
@@ -36,7 +42,7 @@ public class GUI extends JFrame {
     private ArrayList<String> objectNames;
     private DefaultComboBoxModel<String> objectModel;
     JButton labelButton;
-    JButton addButton;
+    JButton insertButton;
     //選取事件
     private JTextField choicesTextField;
     //新建標籤 與 讀黨存檔
@@ -129,9 +135,9 @@ public class GUI extends JFrame {
         objectModel=new DefaultComboBoxModel<>(objectNames.toArray(new String[0]));
         objectChoices=new JComboBox<>(objectModel);
         labelPanel.add(objectChoices);
-        addButton=new JButton("Insert Object");
-        addButton.addActionListener(new MyTagListener());
-        labelPanel.add(addButton);
+        insertButton=new JButton("Insert Object");
+        insertButton.addActionListener(new MyTagListener());
+        labelPanel.add(insertButton);
 
         labelPanel.add(Box.createVerticalStrut(0)); labelPanel.add(Box.createVerticalStrut(0));
         labelPanel.add(new CustomSeparator(Color.BLACK, 3));labelPanel.add(new CustomSeparator(Color.BLACK, 3));
@@ -278,7 +284,7 @@ public class GUI extends JFrame {
                 newSearchGUI.setLocationRelativeTo(GUI.this);
                 newSearchGUI.setVisible(true);
             }
-            else if (e.getSource()==addButton) {
+            else if (e.getSource()==insertButton) {
 
             }
         }
@@ -302,19 +308,45 @@ public class GUI extends JFrame {
                 tags.add(newLabel);
             }
             else if(e.getSource()==saveButton){
-                tmp="save!";
-                for(int i=0;i<eventCount;i++){
-                    tmp+=events.get(i).getName()+":"+events.get(i).getColor()+"\n";
+                JFileChooser fileChooser = new JFileChooser();
+                int result = fileChooser.showSaveDialog(GUI.this);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    if (!selectedFile.getAbsolutePath().toLowerCase().endsWith(".txt")) {
+                        selectedFile = new File(selectedFile.getAbsolutePath() + ".txt");
+                    }
+                    writeFile(selectedFile);
                 }
-                JOptionPane.showMessageDialog(null,tmp);
             }
             else if(e.getSource()==readButton){
-                tmp="read!";
-                for(int i=0;i<eventCount;i++){
-                    tmp+=events.get(i).getName()+":"+events.get(i).getColor()+"\n";
+                JFileChooser fileChooser = new JFileChooser();
+                int result = fileChooser.showOpenDialog(GUI.this);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    readFile(selectedFile);
                 }
-                JOptionPane.showMessageDialog(null,tmp);
             }
+        }
+    }
+    private void readFile(File file) {
+        StringBuilder tmp= new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            tmp = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                tmp.append(line).append("\n");
+            }
+            JOptionPane.showMessageDialog(null, tmp.toString());
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error reading file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    private void writeFile(File file) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write("建立檔案！");
+            JOptionPane.showMessageDialog(this, "File saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error saving file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

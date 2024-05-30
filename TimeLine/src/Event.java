@@ -1,32 +1,27 @@
 import java.awt.Color;
-import java.awt.Graphics;
+import java.util.ArrayList;
+
 public class Event {
     private Color color;
-    private final Label insidePeople;
-    private final Label insideRes;
+    private ArrayList<People> peoples=new ArrayList<>();
+    private ArrayList<Res> res=new ArrayList<>();
     private String name;
     Event(String n, Color c){
         name=n;
-        insidePeople=new Label(name);
-        insideRes=new Label(name);
         color=c;
     }
 
     public void addNewMember(People p){
-        insidePeople.newMember(p);
+        peoples.add(p);
     }
 
     public void addNewMember(Res r){
-        insideRes.newMember(r);
+        res.add(r);
     }
 
-    public Label getInsidePeople(){
-        return insidePeople;
-    }
+    public ArrayList<Res> getRes(){return res;}
 
-    public Label getInsideRes(){
-        return insideRes;
-    }
+    public ArrayList<People> getPeoples(){return peoples;}
 
     public String getName(){return name;}
 

@@ -1,11 +1,7 @@
 public class People extends Ob{
-    private String name;
+    private final String name;
     People(String name){
         this.name=name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getName() {

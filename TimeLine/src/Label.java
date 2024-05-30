@@ -1,15 +1,10 @@
 import java.util.ArrayList;
 
 public class Label {
-    private String name;
-    private ArrayList<Ob> members=new ArrayList<>();
-    private int num=0;
+    private final String name;
+    private final ArrayList<Ob> members=new ArrayList<>();
     Label(String name){
         this.name=name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getName() {
@@ -18,7 +13,6 @@ public class Label {
 
     public void newMember(Ob member){
         members.add(member);
-        num++;
     }
 
     public ArrayList<Ob> getMembers(){
