@@ -364,7 +364,12 @@ public class GUI extends JFrame {
     private void createDraggableButton(String buttonName) {
         JButton newButton = new JButton(buttonName);
         newButton.setSize(150, 30);
-
+        // 獲取所選事件顏色的索引
+        int selectedColorIndex = eventColorChoices.getSelectedIndex();
+        if (selectedColorIndex >= 0 && selectedColorIndex < colors.length) {
+            // 根據索引獲取顏色並設置按鈕的背景色
+            newButton.setBackground(colors[selectedColorIndex]);
+        }
         // Add mouse listener for dragging
         newButton.addMouseMotionListener(new MouseMotionAdapter() {
             Point lastPoint = null;
