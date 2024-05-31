@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.*;
@@ -50,6 +52,8 @@ public class GUI extends JFrame {
     private JButton readButton;
     private JButton newButton;
     private JButton saveButton;
+    //拖曳需要所以獨立出來
+    private JPanel leftPanel;
     //GUI constructor
     public GUI(){
         //GUI建立
@@ -59,7 +63,7 @@ public class GUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tags.add(noAffiliation);
         //左側GUI
-        JPanel leftPanel = new JPanel();
+        leftPanel = new JPanel();
         leftPanel.setBackground(Color.LIGHT_GRAY);
         leftPanel.add(new JLabel("Time Line"));
         //右側GUI
@@ -82,7 +86,14 @@ public class GUI extends JFrame {
         eventColorChoices.addActionListener(new MyEventListener());
         eventPanel.add(eventColorChoices);
         eventButton=new JButton("Create");
+        //建立事件N的按鈕
         eventButton.addActionListener(new MyEventListener());
+        eventButton.addActionListener(e -> {
+            String buttonName = eventInput.getText();
+            if (!buttonName.isEmpty()) {
+                createDraggableButton(buttonName);
+            }
+        });
         eventPanel.add(eventButton);
         eventPanel.add(Box.createVerticalStrut(0));eventPanel.add(Box.createVerticalStrut(0));
         eventPanel.add(new CustomSeparator(Color.BLACK, 2));eventPanel.add(new CustomSeparator(Color.BLACK, 2));
@@ -348,5 +359,35 @@ public class GUI extends JFrame {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error saving file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void createDraggableButton(String buttonName) {
+        JButton newButton = new JButton(buttonName);
+        newButton.setSize(150, 30);
+
+        // Add mouse listener for dragging
+        newButton.addMouseMotionListener(new MouseMotionAdapter() {
+            Point lastPoint = null;
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (lastPoint != null) {
+                    Point newPoint = e.getLocationOnScreen();
+                    newButton.setLocation(newButton.getX() + (newPoint.x - lastPoint.x),
+                            newButton.getY() + (newPoint.y - lastPoint.y));
+                }
+                lastPoint = e.getLocationOnScreen();
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                lastPoint = e.getLocationOnScreen();
+            }
+        });
+
+
+        leftPanel.add(newButton);
+        leftPanel.repaint();
+        leftPanel.revalidate();
     }
 }
