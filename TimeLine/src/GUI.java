@@ -19,6 +19,7 @@ public class GUI extends JFrame {
     private JPanel labelPanel;
     private ArrayList<String> tagNames;
     private final String[] colorNames = { "Blue", "Cyan", "Gray", "Green", "Magenta", "Orange", "Pink", "Red", "Yellow", "White", "Black" };
+    private final String[] deleteNames={"Event","Object","Tag"};
     private final Color[] colors={Color.BLUE,Color.CYAN,Color.GRAY,Color.GREEN,Color.MAGENTA,Color.ORANGE,Color.PINK,Color.RED,Color.YELLOW,Color.WHITE,Color.BLACK};
     private ArrayList<Event> events=new ArrayList<>();
     private ArrayList<Ob> Obs=new ArrayList<>();
@@ -47,6 +48,10 @@ public class GUI extends JFrame {
     JButton insertButton;
     //選取事件
     private JTextField choicesTextField;
+    JButton updateButton;
+    JButton checkButton;
+    private JComboBox<String> deleteChoices;
+    private JButton deleteButton;
     //新建標籤 與 讀黨存檔
     private JTextField tagTextField;
     private JButton readButton;
@@ -185,13 +190,27 @@ public class GUI extends JFrame {
         //右:選取事件(下)
         JPanel choicesBottomPanel=new JPanel(new GridLayout(5,1));
         choicesBottomPanel.setBackground(Color.PINK);
-        JButton renewButton=new JButton("Update event");
-        renewButton.addActionListener(new MyChoicesListener());
-        choicesBottomPanel.add(renewButton);
-        choicesBottomPanel.add(Box.createVerticalStrut(0));
-        JButton checkButton=new JButton("Check event");
+        JPanel UCPanel=new JPanel(new GridLayout(1,2));
+        UCPanel.setBackground(Color.PINK);
+        updateButton=new JButton("Update event");
+        updateButton.addActionListener(new MyChoicesListener());
+        UCPanel.add(updateButton);
+        checkButton=new JButton("Check event");
         checkButton.addActionListener(new MyChoicesListener());
-        choicesBottomPanel.add(checkButton);
+        UCPanel.add(checkButton);
+        choicesBottomPanel.add(UCPanel);
+        JPanel deletePanel =new JPanel(new GridLayout(1,2));
+        deletePanel.setBackground(Color.PINK);
+        JLabel deleteLabel =new JLabel("delete:");
+        deleteLabel.setFont(new Font("Arial",Font.PLAIN,20));
+        deletePanel.add(deleteLabel);
+        deleteChoices=new JComboBox<String>(deleteNames);
+        deleteChoices.addActionListener(new MyChoicesListener());
+        deletePanel.add(deleteChoices);
+        choicesBottomPanel.add(deletePanel);
+        deleteButton=new JButton("delete");
+        deleteButton.addActionListener(new MyChoicesListener());
+        choicesBottomPanel.add(deleteButton);
         choicesBottomPanel.add(Box.createVerticalStrut(0));
         choicesBottomPanel.add(new CustomSeparator(Color.BLACK, 3));
         rightPanel.add(choicesBottomPanel);
@@ -248,11 +267,6 @@ public class GUI extends JFrame {
            if(e.getSource()==eventButton){
                 Event newEvent=new Event(eventInput.getText(),colors[eventColorChoices.getSelectedIndex()]);
                 events.add(newEvent);
-                eventNames.add(newEvent.getName());
-                eventModel.addElement(newEvent.getName());
-
-                choicesTextField.setText(events.get(eventCount).getName()+":"+events.get(eventCount).getColor());//最後要刪掉
-                eventCount++;//最後要刪掉
             }
         }
     }
