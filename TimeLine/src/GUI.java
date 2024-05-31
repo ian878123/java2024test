@@ -88,7 +88,6 @@ public class GUI extends JFrame {
         eventInput.addActionListener(new MyEventListener());
         eventPanel.add(eventInput);
         eventColorChoices=new JComboBox<String>(colorNames);
-        eventColorChoices.addActionListener(new MyEventListener());
         eventPanel.add(eventColorChoices);
         eventButton=new JButton("Create");
         //建立事件N的按鈕
@@ -205,7 +204,6 @@ public class GUI extends JFrame {
         deleteLabel.setFont(new Font("Arial",Font.PLAIN,20));
         deletePanel.add(deleteLabel);
         deleteChoices=new JComboBox<String>(deleteNames);
-        deleteChoices.addActionListener(new MyChoicesListener());
         deletePanel.add(deleteChoices);
         choicesBottomPanel.add(deletePanel);
         deleteButton=new JButton("delete");
@@ -317,7 +315,34 @@ public class GUI extends JFrame {
     private class MyChoicesListener implements ActionListener{//所有關於選取事件的事件監聽器
         @Override
         public void actionPerformed(ActionEvent e){
-
+            if(e.getSource()==updateButton){
+                JOptionPane.showMessageDialog(null,"UPDATE");
+            }
+            else if(e.getSource()==checkButton){
+                JOptionPane.showMessageDialog(null,"CHECK");
+            }
+            else if(e.getSource()==deleteButton){
+                if(deleteChoices.getSelectedIndex()==0){
+                    deleteGUI newDeleteGUI=new deleteGUI(events,GUI.this);
+                    newDeleteGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    newDeleteGUI.setSize(350,300);
+                    newDeleteGUI.setLocationRelativeTo(GUI.this);
+                    newDeleteGUI.setVisible(true);
+                }
+                else if(deleteChoices.getSelectedIndex()==1){
+                    deleteGUI newDeleteGUI=new deleteGUI(Obs,1,GUI.this);
+                    newDeleteGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    newDeleteGUI.setSize(350,300);
+                    newDeleteGUI.setLocationRelativeTo(GUI.this);
+                    newDeleteGUI.setVisible(true);
+                }
+                else{
+                    deleteGUI newDeleteGUI=new deleteGUI(tags,"1",GUI.this);
+                    newDeleteGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    newDeleteGUI.setSize(350,300);
+                    newDeleteGUI.setLocationRelativeTo(GUI.this);
+                    newDeleteGUI.setVisible(true);}
+            }
         }
     }
     private class MySaveListener implements ActionListener{//所有關於存檔讀檔的事件監聽器
@@ -404,9 +429,32 @@ public class GUI extends JFrame {
             }
         });
 
-
         leftPanel.add(newButton);
         leftPanel.repaint();
         leftPanel.revalidate();
+    }
+    public void deleteEvent(int index) {
+        if (index >= 0 && index < events.size()) {
+            events.remove(index);
+        }
+    }
+    public void deleteObs(int index) {
+        if (index >= 0 && index < Obs.size()) {
+            String tmp=Obs.get(index).getName();
+            Obs.remove(index);
+            objectNames.remove(index);
+            objectModel.removeElement("R:"+tmp);
+            objectModel.removeElement("P:"+tmp);
+        }
+    }
+    public void deleteTag(int index) {
+        if (index >= 0 && index < tags.size()) {
+            String tmp=tags.get(index).getName();
+            objectNames.remove(index);
+            eventNames.remove(index);
+            objectTagModel.removeElement(tmp);
+            eventModel.removeElement(tmp);
+            tags.remove(index);
+        }
     }
 }
