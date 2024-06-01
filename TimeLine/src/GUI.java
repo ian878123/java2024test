@@ -93,12 +93,7 @@ public class GUI extends JFrame {
         eventButton=new JButton("Create");
         //建立事件N的按鈕
         eventButton.addActionListener(new MyEventListener());
-        eventButton.addActionListener(e -> {
-            String buttonName = eventInput.getText();
-            if (!buttonName.isEmpty()) {
-                createDraggableButton(buttonName);
-            }
-        });
+
         eventPanel.add(eventButton);
         eventPanel.add(Box.createVerticalStrut(0));eventPanel.add(Box.createVerticalStrut(0));
         eventPanel.add(new CustomSeparator(Color.BLACK, 2));eventPanel.add(new CustomSeparator(Color.BLACK, 2));
@@ -263,10 +258,45 @@ public class GUI extends JFrame {
     class MyEventListener implements ActionListener {//所有關於建立新事件的事件監聽器
         @Override
         public void actionPerformed(ActionEvent e){
-           if(e.getSource()==eventButton){
-                Event newEvent=new Event(eventInput.getText(),colors[eventColorChoices.getSelectedIndex()]);
-                events.add(newEvent);
+            if(e.getSource()==eventButton){
+                String eventName = eventInput.getText();
+                Color eventColor = colors[eventColorChoices.getSelectedIndex()];
+                if (!eventName.isEmpty()) {
+                    Event newEvent = new Event(eventName, eventColor);
+                    events.add(newEvent);
+                    createDraggableButton(newEvent);
+                }
             }
+        }
+
+        private void createDraggableButton(Event event) {
+            JButton newButton = new JButton(event.getName());
+            newButton.setSize(150, 30);
+            newButton.setBackground(event.getColor());
+
+            // Add mouse listener for dragging
+            newButton.addMouseMotionListener(new MouseMotionAdapter() {
+                Point lastPoint = null;
+
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                    if (lastPoint != null) {
+                        Point newPoint = e.getLocationOnScreen();
+                        newButton.setLocation(newButton.getX() + (newPoint.x - lastPoint.x),
+                                newButton.getY() + (newPoint.y - lastPoint.y));
+                    }
+                    lastPoint = e.getLocationOnScreen();
+                }
+
+                @Override
+                public void mouseMoved(MouseEvent e) {
+                    lastPoint = e.getLocationOnScreen();
+                }
+            });
+
+            leftPanel.add(newButton);
+            leftPanel.repaint();
+            leftPanel.revalidate();
         }
     }
     private class MyObjectListener implements ActionListener{//所有關於添加新物件的事件監聽器
@@ -413,44 +443,23 @@ public class GUI extends JFrame {
         }
     }
     */
-    private void createDraggableButton(String buttonName) {
-        JButton newButton = new JButton(buttonName);
-        newButton.setSize(150, 30);
-        // 獲取所選事件顏色的索引
-        int selectedColorIndex = eventColorChoices.getSelectedIndex();
-        if (selectedColorIndex >= 0 && selectedColorIndex < colors.length) {
-            // 根據索引獲取顏色並設置按鈕的背景色
-            newButton.setBackground(colors[selectedColorIndex]);
-        }
-        // Add mouse listener for dragging
-        newButton.addMouseMotionListener(new MouseMotionAdapter() {
-            Point lastPoint = null;
 
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                if (lastPoint != null) {
-                    Point newPoint = e.getLocationOnScreen();
-                    newButton.setLocation(newButton.getX() + (newPoint.x - lastPoint.x),
-                            newButton.getY() + (newPoint.y - lastPoint.y));
+    public void deleteEvent(Event event) {
+        if (events.contains(event)) {
+            events.remove(event);
+
+            // Remove the corresponding button from the left panel
+            Component[] components = leftPanel.getComponents();
+            for (Component component : components) {
+                if (component instanceof JButton) {
+                    JButton button = (JButton) component;
+                    if (button.getText().equals(event.getName())) {
+                        leftPanel.remove(button);
+                        break;
+                    }
                 }
-                lastPoint = e.getLocationOnScreen();
             }
 
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                lastPoint = e.getLocationOnScreen();
-            }
-        });
-
-        leftPanel.add(newButton);
-        leftPanel.repaint();
-        leftPanel.revalidate();
-    }
-    public void deleteEvent(int index) {
-        if (index >= 0 && index < events.size()) {
-            events.remove(index);
-
-            leftPanel.remove(index);
             leftPanel.repaint();
             leftPanel.revalidate();
         }

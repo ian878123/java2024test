@@ -53,9 +53,11 @@ public class deleteGUI extends JFrame{
         public void actionPerformed(ActionEvent e){
             Button clickedButton = (Button) e.getSource();
             int eventIndex = clickedButton.getNum();
-            clickedButton.getGUI().deleteEvent(eventIndex);
+            clickedButton.getGUI().deleteEvent(EVENT.get(eventIndex));
+            dispose();
         }
     }
+
     private class ObsListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e){
