@@ -45,8 +45,10 @@ public class GUI extends JFrame {
     JButton labelButton;
     JButton insertButton;
     //選取事件
-    private Event nowSelected;
+    private Event nowSelected=null;
     private JTextField choicesTextField;
+    JTextField renamedTextField;
+    JComboBox<String>  recolorChoices;
     JButton updateButton;
     JButton checkButton;
     private JComboBox<String> deleteChoices;
@@ -158,7 +160,7 @@ public class GUI extends JFrame {
         JLabel choicesLabel=new JLabel("What you are selecting now is:");
         choicesLabel.setFont(new Font("Arial",Font.PLAIN,20));
         choicesPanel.add(choicesLabel);
-        choicesTextField=new JTextField("now selecting event");
+        choicesTextField=new JTextField("no selecting");
         choicesTextField.setBackground(Color.LIGHT_GRAY);
         choicesTextField.setEditable(false);
         choicesPanel.add(choicesTextField);
@@ -167,7 +169,7 @@ public class GUI extends JFrame {
         JLabel renamedLabel=new JLabel("    renamed:");
         renamedLabel.setFont(new Font("Arial",Font.PLAIN,20));
         renamedPanel.add(renamedLabel);
-        JTextField renamedTextField=new JTextField("enter name here");
+        renamedTextField=new JTextField("enter name here");
         renamedTextField.addActionListener(new MyChoicesListener());
         renamedPanel.add(renamedTextField);
         choicesPanel.add(renamedPanel);
@@ -176,7 +178,7 @@ public class GUI extends JFrame {
         JLabel recolorLabel=new JLabel("    recolor:");
         recolorLabel.setFont(new Font("Arial",Font.PLAIN,20));
         recolorPanel.add(recolorLabel);
-        JComboBox<String>  recolorChoices=new JComboBox<String>(colorNames);
+        recolorChoices=new JComboBox<String>(colorNames);
         recolorChoices.addActionListener(new MyChoicesListener());
         recolorPanel.add(recolorChoices);
         choicesPanel.add(recolorPanel);
@@ -237,6 +239,58 @@ public class GUI extends JFrame {
         splitPane.setEnabled(false);
         add(splitPane);
     }
+    private void createDraggableButton(Event event) {
+        JButton newButton = new JButton(event.getName());
+        newButton.setSize(150, 30);
+        newButton.setBackground(event.getColor());
+        // Add mouse listener for dragging
+        newButton.addMouseMotionListener(new MouseMotionAdapter() {
+            Point lastPoint = null;
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (lastPoint != null) {
+                    Point newPoint = e.getLocationOnScreen();
+                    newButton.setLocation(newButton.getX() + (newPoint.x - lastPoint.x),
+                            newButton.getY() + (newPoint.y - lastPoint.y));
+                }
+                lastPoint = e.getLocationOnScreen();
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                lastPoint = e.getLocationOnScreen();
+            }
+
+        });
+
+        newButton.addMouseListener(new MouseAdapter() {
+            Point initialClick = null;
+            long initialTime;
+            @Override
+            public void mousePressed(MouseEvent e) {
+                initialClick = e.getPoint();
+                initialTime = System.currentTimeMillis();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                long releaseTime = System.currentTimeMillis();
+                if (releaseTime - initialTime < 200) { // Check if the time is within 200 ms
+                    Point releasePoint = e.getPoint();
+                    if (initialClick.distance(releasePoint) < 5) { // Check if the distance is within 5 pixels
+                        nowSelected=event;
+                        JOptionPane.showMessageDialog(GUI.this, "注意看右邊灰色部分，可以用nowSelected來使用那個事件");
+                        choicesTextField.setText(nowSelected.getName());
+                    }
+                }
+            }
+        });
+
+        leftPanel.add(newButton);
+        leftPanel.repaint();
+        leftPanel.revalidate();
+    }
     static class CustomSeparator extends JSeparator{//建立黑線
         private Color color;
         private int thickness;
@@ -266,59 +320,6 @@ public class GUI extends JFrame {
                     createDraggableButton(newEvent);
                 }
             }
-        }
-
-        private void createDraggableButton(Event event) {
-            JButton newButton = new JButton(event.getName());
-            newButton.setSize(150, 30);
-            newButton.setBackground(event.getColor());
-            // Add mouse listener for dragging
-            newButton.addMouseMotionListener(new MouseMotionAdapter() {
-                Point lastPoint = null;
-
-                @Override
-                public void mouseDragged(MouseEvent e) {
-                    if (lastPoint != null) {
-                        Point newPoint = e.getLocationOnScreen();
-                        newButton.setLocation(newButton.getX() + (newPoint.x - lastPoint.x),
-                                newButton.getY() + (newPoint.y - lastPoint.y));
-                    }
-                    lastPoint = e.getLocationOnScreen();
-                }
-
-                @Override
-                public void mouseMoved(MouseEvent e) {
-                    lastPoint = e.getLocationOnScreen();
-                }
-
-            });
-
-            newButton.addMouseListener(new MouseAdapter() {
-                Point initialClick = null;
-                long initialTime;
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    initialClick = e.getPoint();
-                    initialTime = System.currentTimeMillis();
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    long releaseTime = System.currentTimeMillis();
-                    if (releaseTime - initialTime < 200) { // Check if the time is within 200 ms
-                        Point releasePoint = e.getPoint();
-                        if (initialClick.distance(releasePoint) < 5) { // Check if the distance is within 5 pixels
-                            nowSelected=event;
-                            JOptionPane.showMessageDialog(GUI.this, "注意看右邊灰色部分，可以用nowSelected來使用那個事件");
-                            choicesTextField.setText(nowSelected.getName());
-                        }
-                    }
-                }
-            });
-
-            leftPanel.add(newButton);
-            leftPanel.repaint();
-            leftPanel.revalidate();
         }
     }
     private class MyObjectListener implements ActionListener{//所有關於添加新物件的事件監聽器
@@ -379,7 +380,19 @@ public class GUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e){
             if(e.getSource()==updateButton){
-                JOptionPane.showMessageDialog(null,"UPDATE");
+                if(nowSelected!=null){
+                   // nowSelected.setDrawingColor();
+                   // nowSelected.setName();
+                    Event newEvent=new Event(renamedTextField.getText(),colors[recolorChoices.getSelectedIndex()]);
+                    events.add(newEvent);
+                    createDraggableButton(newEvent);
+                    deleteEvent(nowSelected);
+                    nowSelected=null;
+                    choicesTextField.setText("no selecting");
+                }
+                else{
+                    JOptionPane.showMessageDialog(null,"沒有選到事件");
+                }
             }
             else if(e.getSource()==checkButton){
                 JOptionPane.showMessageDialog(null,"CHECK");

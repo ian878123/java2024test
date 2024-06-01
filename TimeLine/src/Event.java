@@ -25,6 +25,8 @@ public class Event implements java.io.Serializable{
 
     public String getName(){return name;}
 
+    public void setName(String s){name=s;}
+
     public void setDrawingColor(Color c) {
         color=c;
     }
