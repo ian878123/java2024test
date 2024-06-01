@@ -71,6 +71,7 @@ public class GUI extends JFrame {
         leftPanel = new JPanel();
         leftPanel.setBackground(Color.LIGHT_GRAY);
         leftPanel.add(new JLabel("Time Line"));
+        leftPanel.setLayout(null);
         //右側GUI
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new GridLayout(6,1));
@@ -436,6 +437,10 @@ public class GUI extends JFrame {
     public void deleteEvent(int index) {
         if (index >= 0 && index < events.size()) {
             events.remove(index);
+
+            leftPanel.remove(index);
+            leftPanel.repaint();
+            leftPanel.revalidate();
         }
     }
     public void deleteObs(int index) {
