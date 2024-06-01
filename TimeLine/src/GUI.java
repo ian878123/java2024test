@@ -313,6 +313,7 @@ public class GUI extends JFrame {
             else if (e.getSource()==objectButton) {
                 if(PorR==P){
                     People newPeople=new People(objectInput.getText());
+                    newPeople.addTag(tags.get(objectTagChoices.getSelectedIndex()));
                     Obs.add(newPeople);
                     objectNames.add(objectInput.getText());
                     objectModel.addElement("P:"+newPeople.getName());
@@ -320,6 +321,7 @@ public class GUI extends JFrame {
                 }
                 else{
                     Res newRes=new Res(objectInput.getText());
+                    newRes.addTag(tags.get(objectTagChoices.getSelectedIndex()));
                     Obs.add(newRes);
                     objectNames.add(objectInput.getText());
                     objectModel.addElement("R:"+newRes.getName());
@@ -465,30 +467,24 @@ public class GUI extends JFrame {
         }
     }
     public void deleteObs(Ob ob) {
-        StringBuilder s= new StringBuilder();
-        for (Ob o : Obs) {
-            s.append(o.getName()).append(",");
-        }
-        JOptionPane.showMessageDialog(null,"刪除前:"+s);
-
         if(ob instanceof People){
             String tmp=ob.getName();
+            for(Label t:((People) ob).getTagsIn()){
+                t.deleteMember(ob);
+            }
             Obs.remove(ob);
             objectNames.remove(tmp);
             objectModel.removeElement("P:"+tmp);
         }
         else if(ob instanceof Res){
             String tmp=ob.getName();
+            for(Label t:((Res) ob).getTagsIn()){
+                t.deleteMember(ob);
+            }
             Obs.remove(ob);
             objectNames.remove(tmp);
             objectModel.removeElement("R:"+tmp);
         }
-
-        s= new StringBuilder();
-        for (Ob o : Obs) {
-            s.append(o.getName()).append(",");
-        }
-        JOptionPane.showMessageDialog(null,"刪除後:"+s);
     }
     public void deleteTag(Label tag) {
         String tmp=tag.getName();

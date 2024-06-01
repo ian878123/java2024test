@@ -15,6 +15,10 @@ public class Label {
         members.add(member);
     }
 
+    public void deleteMember(Ob member){
+        members.remove(member);
+    }
+
     public ArrayList<Ob> getMembers(){
         return members;
     }
