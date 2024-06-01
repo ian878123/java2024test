@@ -1,11 +1,9 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.*;
+import javax.swing.event.MouseInputListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -47,6 +45,7 @@ public class GUI extends JFrame {
     JButton labelButton;
     JButton insertButton;
     //選取事件
+    private Event nowSelected;
     private JTextField choicesTextField;
     JButton updateButton;
     JButton checkButton;
@@ -273,7 +272,6 @@ public class GUI extends JFrame {
             JButton newButton = new JButton(event.getName());
             newButton.setSize(150, 30);
             newButton.setBackground(event.getColor());
-
             // Add mouse listener for dragging
             newButton.addMouseMotionListener(new MouseMotionAdapter() {
                 Point lastPoint = null;
@@ -291,6 +289,30 @@ public class GUI extends JFrame {
                 @Override
                 public void mouseMoved(MouseEvent e) {
                     lastPoint = e.getLocationOnScreen();
+                }
+
+            });
+
+            newButton.addMouseListener(new MouseAdapter() {
+                Point initialClick = null;
+                long initialTime;
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    initialClick = e.getPoint();
+                    initialTime = System.currentTimeMillis();
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    long releaseTime = System.currentTimeMillis();
+                    if (releaseTime - initialTime < 200) { // Check if the time is within 200 ms
+                        Point releasePoint = e.getPoint();
+                        if (initialClick.distance(releasePoint) < 5) { // Check if the distance is within 5 pixels
+                            nowSelected=event;
+                            JOptionPane.showMessageDialog(GUI.this, "注意看右邊灰色部分，可以用nowSelected來使用那個事件");
+                            choicesTextField.setText(nowSelected.getName());
+                        }
+                    }
                 }
             });
 

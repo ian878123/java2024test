@@ -23,7 +23,6 @@ public class deleteGUI extends JFrame{
     }
     public deleteGUI(ArrayList<Ob> obs, int index,GUI gui){
         super("Delete object");
-        setUndecorated(true);
         OB=obs;
         setLayout(new FlowLayout());
         JLabel deleteLabel =new JLabel("選擇其中一個物件刪除:");
@@ -36,7 +35,6 @@ public class deleteGUI extends JFrame{
     }
     public deleteGUI(ArrayList<Label> tags, String s,GUI gui){
         super("Delete tag");
-        setUndecorated(true);
         TAG=tags;
         setLayout(new FlowLayout());
         JLabel deleteLabel =new JLabel("選擇其中一個標籤刪除:");
