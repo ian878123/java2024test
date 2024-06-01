@@ -360,25 +360,37 @@ public class GUI extends JFrame {
             }
             else if(e.getSource()==saveButton){
                 JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setCurrentDirectory(new java.io.File("."));//設定初始路徑
                 int result = fileChooser.showSaveDialog(GUI.this);
                 if (result == JFileChooser.APPROVE_OPTION) {
+                    System.out.println("getSelectedFile(): " + fileChooser.getSelectedFile());
+                    Saving.save(events, fileChooser.getSelectedFile());
+                    /*
                     File selectedFile = fileChooser.getSelectedFile();
                     if (!selectedFile.getAbsolutePath().toLowerCase().endsWith(".txt")) {
                         selectedFile = new File(selectedFile.getAbsolutePath() + ".txt");
                     }
                     writeFile(selectedFile);
+                    */
                 }
             }
             else if(e.getSource()==readButton){
                 JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setCurrentDirectory(new java.io.File("."));//設定初始路徑
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); //設定只能選擇資料夾
                 int result = fileChooser.showOpenDialog(GUI.this);
                 if (result == JFileChooser.APPROVE_OPTION) {
+                    System.out.println("getSelectedFile(): " + fileChooser.getSelectedFile());
+                    events=Loading.Load(fileChooser.getSelectedFile());
+                    /*
                     File selectedFile = fileChooser.getSelectedFile();
                     readFile(selectedFile);
+                    */
                 }
             }
         }
     }
+    /*
     private void readFile(File file) {
         StringBuilder tmp= new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -400,7 +412,7 @@ public class GUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Error saving file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    */
     private void createDraggableButton(String buttonName) {
         JButton newButton = new JButton(buttonName);
         newButton.setSize(150, 30);

@@ -1,7 +1,7 @@
 import java.awt.Color;
 import java.util.ArrayList;
 
-public class Event {
+public class Event implements java.io.Serializable{
     private Color color;
     private ArrayList<People> peoples=new ArrayList<>();
     private ArrayList<Res> res=new ArrayList<>();
