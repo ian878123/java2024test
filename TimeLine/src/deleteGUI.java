@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 public class deleteGUI extends JFrame{
     public Button tmp;
-    public GUI g;
     public ArrayList<Event> EVENT;
     public ArrayList<Label> TAG;
     public ArrayList<Ob> OB;
@@ -78,8 +77,8 @@ public class deleteGUI extends JFrame{
     }
 }
 class Button extends JButton{
-    private int num;
-    private GUI gui;
+    private final int num;
+    private final GUI gui;
     Button(int i,String n, GUI g){
         super(n);
         num=i;

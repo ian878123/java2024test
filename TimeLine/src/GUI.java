@@ -313,6 +313,10 @@ public class GUI extends JFrame {
             else if (e.getSource()==objectButton) {
                 if(PorR==P){
                     People newPeople=new People(objectInput.getText());
+                    describeGUI frame=new describeGUI(newPeople);
+                    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    frame.setLocationRelativeTo(GUI.this);
+                    frame.setVisible(true);
                     newPeople.addTag(tags.get(objectTagChoices.getSelectedIndex()));
                     Obs.add(newPeople);
                     objectNames.add(objectInput.getText());
@@ -321,6 +325,10 @@ public class GUI extends JFrame {
                 }
                 else{
                     Res newRes=new Res(objectInput.getText());
+                    describeGUI frame=new describeGUI(newRes);
+                    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    frame.setLocationRelativeTo(GUI.this);
+                    frame.setVisible(true);
                     newRes.addTag(tags.get(objectTagChoices.getSelectedIndex()));
                     Obs.add(newRes);
                     objectNames.add(objectInput.getText());

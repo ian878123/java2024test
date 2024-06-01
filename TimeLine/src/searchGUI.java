@@ -1,8 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class searchGUI  extends JFrame {
+    private People p;
+    private Res r;
     public searchGUI(Label tag){
         super(tag.getName());
         ArrayList<Ob> obs=tag.getMembers();
@@ -15,7 +19,8 @@ public class searchGUI  extends JFrame {
         peoplePanel.add(peopleLabel);
         for (Ob ob : obs) {
             if (ob instanceof People) {
-                tmp = new JButton(ob.getName());
+                tmp = new SearchButton(ob);
+                tmp.addActionListener(new buttonListener());
                 peoplePanel.add(tmp);
             }
         }
@@ -24,12 +29,34 @@ public class searchGUI  extends JFrame {
         resPanel.add(resLabel);
         for (Ob ob : obs) {
             if (ob instanceof Res) {
-                tmp = new JButton(ob.getName());
+                tmp = new SearchButton(ob);
+                tmp.addActionListener(new buttonListener());
                 resPanel.add(tmp);
             }
         }
 
         add(peoplePanel);
         add(resPanel);
+    }
+    private class buttonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e){
+            SearchButton clickedButton = (SearchButton) e.getSource();
+            Ob clickedOb=clickedButton.getOb();
+            describeGUI frame=new describeGUI(clickedOb);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setLocationRelativeTo(searchGUI.this);
+            frame.setVisible(true);
+        }
+    }
+}
+class SearchButton extends JButton{
+    private final Ob Myob;
+    SearchButton(Ob ob){
+        super(ob.getName());
+        Myob=ob;
+    }
+    public Ob getOb(){
+        return Myob;
     }
 }
