@@ -352,7 +352,7 @@ public class GUI extends JFrame {
         public void actionPerformed(ActionEvent e){
             if(e.getSource()==newButton){
                 Label newLabel=new Label(tagTextField.getText());
-                objectNames.add(newLabel.getName());
+                objectTagNames.add(newLabel.getName());
                 eventNames.add(newLabel.getName());
                 objectTagModel.addElement(newLabel.getName());
                 eventModel.addElement(newLabel.getName());
@@ -443,23 +443,38 @@ public class GUI extends JFrame {
             leftPanel.revalidate();
         }
     }
-    public void deleteObs(int index) {
-        if (index >= 0 && index < Obs.size()) {
-            String tmp=Obs.get(index).getName();
-            Obs.remove(index);
-            objectNames.remove(index);
-            objectModel.removeElement("R:"+tmp);
+    public void deleteObs(Ob ob) {
+        StringBuilder s= new StringBuilder();
+        for (Ob o : Obs) {
+            s.append(o.getName()).append(",");
+        }
+        JOptionPane.showMessageDialog(null,"刪除前:"+s);
+
+        if(ob instanceof People){
+            String tmp=ob.getName();
+            Obs.remove(ob);
+            objectNames.remove(tmp);
             objectModel.removeElement("P:"+tmp);
         }
-    }
-    public void deleteTag(int index) {
-        if (index >= 0 && index < tags.size()) {
-            String tmp=tags.get(index).getName();
-            objectNames.remove(index);
-            eventNames.remove(index);
-            objectTagModel.removeElement(tmp);
-            eventModel.removeElement(tmp);
-            tags.remove(index);
+        else if(ob instanceof Res){
+            String tmp=ob.getName();
+            Obs.remove(ob);
+            objectNames.remove(tmp);
+            objectModel.removeElement("R:"+tmp);
         }
+
+        s= new StringBuilder();
+        for (Ob o : Obs) {
+            s.append(o.getName()).append(",");
+        }
+        JOptionPane.showMessageDialog(null,"刪除後:"+s);
+    }
+    public void deleteTag(Label tag) {
+        String tmp=tag.getName();
+        objectTagNames.remove(tmp);
+        eventNames.remove(tmp);
+        objectTagModel.removeElement(tmp);
+        eventModel.removeElement(tmp);
+        tags.remove(tag);
     }
 }
