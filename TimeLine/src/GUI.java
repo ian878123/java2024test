@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.Objects;
+import java.util.HashSet;
 
 public class GUI extends JFrame {
     //base
@@ -61,6 +62,8 @@ public class GUI extends JFrame {
     private JButton saveButton;
     //拖曳需要所以獨立出來
     private JPanel leftPanel;
+    private ArrayList<JButton> selectedButtons = new ArrayList<>(); // To store selected buttons
+    private HashSet<Line> lines = new HashSet<>(); // To store lines
     //GUI constructor
     public GUI(){
         //GUI建立
@@ -70,10 +73,22 @@ public class GUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tags.add(noAffiliation);
         //左側GUI
-        leftPanel = new JPanel();
+        leftPanel = new JPanel(){
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor(Color.RED);
+                for (Line line : lines) {
+                    Point p1 = line.getStartPoint();
+                    Point p2 = line.getEndPoint();
+                    g.drawLine(p1.x, p1.y, p2.x, p2.y);
+                }
+            }
+        };
         leftPanel.setBackground(Color.LIGHT_GRAY);
         leftPanel.add(new JLabel("Time Line"));
         leftPanel.setLayout(null);
+
         //右側GUI
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new GridLayout(6,1));
@@ -241,11 +256,55 @@ public class GUI extends JFrame {
         splitPane.setEnabled(false);
         add(splitPane);
     }
+    private class Line {
+        JButton btn1;
+        JButton btn2;
+        Point start;
+        Point end;
+
+        Line(JButton btn1, JButton btn2) {
+            this.btn1 = btn1;
+            this.btn2 = btn2;
+            this.start = new Point(btn1.getX() + btn1.getWidth() / 2, btn1.getY() + btn1.getHeight() / 2);
+            this.end = new Point(btn2.getX() + btn2.getWidth() / 2, btn2.getY() + btn2.getHeight() / 2);
+        }
+
+        Point getStartPoint() {
+            return new Point(btn1.getX() + btn1.getWidth() / 2, btn1.getY() + btn1.getHeight() / 2);
+        }
+
+        Point getEndPoint() {
+            return new Point(btn2.getX() + btn2.getWidth() / 2, btn2.getY() + btn2.getHeight() / 2);
+        }
+    }
     private void createDraggableButton(Event event,int x,int y) {
         JButton newButton = new JButton(event.getName());
         newButton.setLocation(x,y);
         newButton.setSize(150, 30);
         newButton.setBackground(event.getColor());
+
+        newButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    if (!selectedButtons.contains(newButton)) {
+                        selectedButtons.add(newButton);
+                        if (selectedButtons.size() % 2 == 0) {
+                            // Connect the last two selected buttons
+                            JButton btn1 = selectedButtons.get(selectedButtons.size() - 2);
+                            JButton btn2 = selectedButtons.get(selectedButtons.size() - 1);
+                            lines.add(new Line(btn1, btn2));
+                            selectedButtons.clear(); // Clear selection after drawing the line
+                        }
+                    } else {
+                        // Remove button from selected and associated lines
+                        selectedButtons.remove(newButton);
+                        lines.removeIf(line -> line.btn1 == newButton || line.btn2 == newButton);
+                    }
+                    leftPanel.repaint();
+                }
+            }
+        });
         // Add mouse listener for dragging
         newButton.addMouseMotionListener(new MouseMotionAdapter() {
             Point lastPoint = null;
@@ -318,7 +377,14 @@ public class GUI extends JFrame {
             if(e.getSource()==eventButton){
                 String eventName = eventInput.getText();
                 Color eventColor = colors[eventColorChoices.getSelectedIndex()];
-                if (!eventName.isEmpty()) {
+                boolean isNameExist = false;
+                for (Event event : events) {
+                    if (Objects.equals(event.getName(), eventName)) {
+                        isNameExist = true;
+                        break;
+                    }
+                }
+                if (!eventName.isEmpty() && !isNameExist) {
                     Event newEvent = new Event(eventName, eventColor,0,0);
                     JButton tmpButton;
                     events.add(newEvent);
@@ -327,6 +393,8 @@ public class GUI extends JFrame {
                     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     frame.setLocationRelativeTo(GUI.this);
                     frame.setVisible(true);
+                }else{
+                    JOptionPane.showMessageDialog(null,"事件已存在");
                 }
             }
         }
@@ -343,7 +411,14 @@ public class GUI extends JFrame {
                 PorR=R;
             }
             else if (e.getSource()==objectButton) {
-                if(PorR==P){
+                boolean isNameExist = false;
+                for (Ob ob : Obs) {
+                    if (Objects.equals(ob.getName(), objectInput.getText())) {
+                        isNameExist = true;
+                        break;
+                    }
+                }
+                if(PorR==P && !isNameExist){
                     People newPeople=new People(objectInput.getText());
                     describeGUI frame=new describeGUI(newPeople);
                     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -356,7 +431,7 @@ public class GUI extends JFrame {
                     objectModel.addElement("P:"+newPeople.getName());
                     tags.get(objectTagChoices.getSelectedIndex()).newMember(newPeople);
                 }
-                else{
+                else if(PorR==R && !isNameExist){
                     Res newRes=new Res(objectInput.getText());
                     describeGUI frame=new describeGUI(newRes);
                     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -368,6 +443,8 @@ public class GUI extends JFrame {
                     objectNames.add(objectInput.getText());
                     objectModel.addElement("R:"+newRes.getName());
                     tags.get(objectTagChoices.getSelectedIndex()).newMember(newRes);
+                }else{
+                    JOptionPane.showMessageDialog(null,"物件已存在");
                 }
             }
         }
@@ -452,17 +529,29 @@ public class GUI extends JFrame {
             }
         }
     }
-    private class MySaveListener implements ActionListener{//所有關於存檔讀檔的事件監聽器
+    private class MySaveListener implements ActionListener{//所有關於存檔讀檔和新建標籤的事件監聽器
         String tmp="";
         @Override
         public void actionPerformed(ActionEvent e){
+
             if(e.getSource()==newButton){
-                Label newLabel=new Label(tagTextField.getText());
-                objectTagNames.add(newLabel.getName());
-                eventNames.add(newLabel.getName());
-                objectTagModel.addElement(newLabel.getName());
-                eventModel.addElement(newLabel.getName());
-                tags.add(newLabel);
+                boolean isNameExist = false;
+                for (Label tag : tags) {
+                    if (Objects.equals(tag.getName(), tagTextField.getText())) {
+                        isNameExist = true;
+                        break;
+                    }
+                }
+                if (!isNameExist) {
+                    Label newLabel=new Label(tagTextField.getText());
+                    objectTagNames.add(newLabel.getName());
+                    eventNames.add(newLabel.getName());
+                    objectTagModel.addElement(newLabel.getName());
+                    eventModel.addElement(newLabel.getName());
+                    tags.add(newLabel);
+                }else {
+                    JOptionPane.showMessageDialog(null,"標籤已存在");
+                }
             }
             else if(e.getSource()==saveButton){
                 JFileChooser fileChooser = new JFileChooser();
@@ -500,6 +589,9 @@ public class GUI extends JFrame {
                     */
                     leftPanel.removeAll();
                     leftPanel.revalidate();
+                    leftPanel.repaint();
+
+                    selectedButtons.clear();
                     leftPanel.repaint();
 
                     for(Event ee:events){
@@ -549,6 +641,7 @@ public class GUI extends JFrame {
                 if (component instanceof JButton) {
                     JButton button = (JButton) component;
                     if (button.getText().equals(event.getName())) {
+                        lines.removeIf(line -> line.btn1 == button || line.btn2 == button);
                         leftPanel.remove(button);
                         break;
                     }
