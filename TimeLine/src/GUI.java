@@ -104,6 +104,13 @@ public class GUI extends JFrame {
         eventPanel.add(eventLabel);
         eventInput=new JTextField("Enter name here",5);
         eventInput.addActionListener(new MyEventListener());
+        eventInput.addMouseListener(new MouseAdapter(){//點擊文字框時清空文字
+            @Override
+            public void mouseClicked(MouseEvent e){
+                if(eventInput.getText().equals("Enter name here"))
+                    eventInput.setText("");
+            }
+        });
         eventPanel.add(eventInput);
         eventColorChoices=new JComboBox<String>(colorNames);
         eventPanel.add(eventColorChoices);
@@ -125,6 +132,13 @@ public class GUI extends JFrame {
         objectPanel.add(objectLabel);
         objectInput=new JTextField("Enter name here",5);
         objectInput.addActionListener(new MyObjectListener());
+        objectInput.addMouseListener(new MouseAdapter(){    //點擊文字框時清空文字
+            @Override
+            public void mouseClicked(MouseEvent e){
+                if(objectInput.getText().equals("Enter name here"))
+                    objectInput.setText("");
+            }
+        });
         objectPanel.add(objectInput);
         ButtonGroup group=new ButtonGroup();
         peopleButton=new JRadioButton("People",true);
@@ -183,16 +197,23 @@ public class GUI extends JFrame {
         choicesPanel.add(choicesTextField);
         JPanel renamedPanel=new JPanel(new GridLayout(1,2));
         renamedPanel.setBackground(Color.PINK);
-        JLabel renamedLabel=new JLabel("    renamed:");
+        JLabel renamedLabel=new JLabel("    Rename:");
         renamedLabel.setFont(new Font("Arial",Font.PLAIN,20));
         renamedPanel.add(renamedLabel);
-        renamedTextField=new JTextField("enter name here");
+        renamedTextField=new JTextField("Enter name here");
         renamedTextField.addActionListener(new MyChoicesListener());
+        renamedTextField.addMouseListener(new MouseAdapter(){//點擊文字框時清空文字
+            @Override
+            public void mouseClicked(MouseEvent e){
+                if(renamedTextField.getText().equals("Enter name here"))
+                    renamedTextField.setText("");
+            }
+        });
         renamedPanel.add(renamedTextField);
         choicesPanel.add(renamedPanel);
         JPanel recolorPanel=new JPanel(new GridLayout(1,2));
         recolorPanel.setBackground(Color.PINK);
-        JLabel recolorLabel=new JLabel("    recolor:");
+        JLabel recolorLabel=new JLabel("    Recolor:");
         recolorLabel.setFont(new Font("Arial",Font.PLAIN,20));
         recolorPanel.add(recolorLabel);
         recolorChoices=new JComboBox<String>(colorNames);
@@ -233,8 +254,15 @@ public class GUI extends JFrame {
         JLabel tagLabel=new JLabel("Tag's name:");
         tagLabel.setFont(new Font("Arial",Font.PLAIN,20));
         savePanel.add(tagLabel);
-        tagTextField=new JTextField("enter name here");
+        tagTextField=new JTextField("Enter name here");
         tagTextField.addActionListener(new MySaveListener());
+        tagTextField.addMouseListener(new MouseAdapter(){//點擊文字框時清空文字
+            @Override
+            public void mouseClicked(MouseEvent e){
+                if(tagTextField.getText().equals("Enter name here"))
+                    tagTextField.setText("");
+            }
+        });
         savePanel.add(tagTextField);
         JLabel newLabel=new JLabel("Create new tag:");
         newLabel.setFont(new Font("Arial",Font.PLAIN,17));
@@ -396,6 +424,7 @@ public class GUI extends JFrame {
                 }else{
                     JOptionPane.showMessageDialog(null,"事件已存在");
                 }
+                eventInput.setText("");
             }
         }
     }
@@ -446,6 +475,7 @@ public class GUI extends JFrame {
                 }else{
                     JOptionPane.showMessageDialog(null,"物件已存在");
                 }
+                objectInput.setText("");
             }
         }
     }
@@ -497,6 +527,7 @@ public class GUI extends JFrame {
                 else{
                     JOptionPane.showMessageDialog(null,"沒有選到事件");
                 }
+                renamedTextField.setText("");
             }
             else if(e.getSource()==checkButton){
                 searchGUI newSearchGUI=new searchGUI(nowSelected);
@@ -552,6 +583,7 @@ public class GUI extends JFrame {
                 }else {
                     JOptionPane.showMessageDialog(null,"標籤已存在");
                 }
+                tagTextField.setText("");
             }
             else if(e.getSource()==saveButton){
                 JFileChooser fileChooser = new JFileChooser();
