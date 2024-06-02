@@ -490,6 +490,10 @@ public class GUI extends JFrame {
                     File selectedFile = fileChooser.getSelectedFile();
                     readFile(selectedFile);
                     */
+                    leftPanel.removeAll();
+                    leftPanel.revalidate();
+                    leftPanel.repaint();
+
                     for(Event ee:events){
                         createDraggableButton(ee,ee.getX(),ee.getY());
                     }
