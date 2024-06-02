@@ -659,7 +659,7 @@ public class GUI extends JFrame {
                     leftPanel.repaint();
 
                     selectedButtons.clear();
-                    leftPanel.repaint();
+                    lines.clear();
 
                     for(Event ee:events){
                         createDraggableButton(ee,ee.getX(),ee.getY());
@@ -677,6 +677,7 @@ public class GUI extends JFrame {
                             }
                         }
                     }
+                    leftPanel.repaint();
                     objectTagModel.removeElementAt(0);
                     eventModel.removeElementAt(0);
                     for(Label tag:tags){
