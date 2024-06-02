@@ -186,6 +186,7 @@ public class GUI extends JFrame {
         jLabel.setFont(new Font("Arial",Font.PLAIN,15));
         labelPanel.add(jLabel);
         insertTagButton=new JButton("Insert to tag");
+        insertTagButton.addActionListener(new MyTagListener());
         labelPanel.add(insertTagButton);
         labelPanel.add(Box.createVerticalStrut(0)); labelPanel.add(Box.createVerticalStrut(0));
         labelPanel.add(new CustomSeparator(Color.BLACK, 3));labelPanel.add(new CustomSeparator(Color.BLACK, 3));
@@ -514,7 +515,17 @@ public class GUI extends JFrame {
                 }
             }
             else if(e.getSource()==insertTagButton){
-
+                Ob tep;
+                tep=Obs.get(objectChoices.getSelectedIndex()-1);
+                if(objectChoices.getSelectedIndex()>0){
+                    tags.get(tagChoices.getSelectedIndex()).newMember(tep);
+                    if(tep instanceof People){
+                        ((People) tep).addTag(tags.get(tagChoices.getSelectedIndex()));
+                    }
+                    else if(tep instanceof Res){
+                        ((Res) tep).addTag(tags.get(tagChoices.getSelectedIndex()));
+                    }
+                }
             }
         }
     }
