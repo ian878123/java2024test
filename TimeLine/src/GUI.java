@@ -392,9 +392,11 @@ public class GUI extends JFrame {
                     if(objectChoices.getSelectedIndex()>0){//確保選到"請選擇物件"時不會報錯
                         if(tmp instanceof People){
                             nowSelected.addNewMember((People) tmp);
+                            ((People) tmp).addEvent(nowSelected);
                         }
                         else if(tmp instanceof Res){
                             nowSelected.addNewMember((Res) tmp);
+                            ((Res) tmp).addEvent(nowSelected);
                         }
                     }
                 }
