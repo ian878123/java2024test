@@ -6,9 +6,13 @@ public class Event implements java.io.Serializable{
     private ArrayList<People> peoples=new ArrayList<>();
     private ArrayList<Res> res=new ArrayList<>();
     private String name;
-    Event(String n, Color c){
+    private int x;
+    private int y;
+    Event(String n, Color c,int xx,int yy){
         name=n;
         color=c;
+        x=xx;
+        y=yy;
     }
 
     public void addNewMember(People p){
@@ -32,4 +36,12 @@ public class Event implements java.io.Serializable{
     }
 
     public Color getColor(){ return color;}
+
+    public void setX(int xx){x=xx;}
+
+    public void setY(int yy){y=yy;}
+
+    public int getX(){return x;}
+
+    public int getY(){return y;}
 }

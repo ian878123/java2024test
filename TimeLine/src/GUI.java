@@ -239,8 +239,9 @@ public class GUI extends JFrame {
         splitPane.setEnabled(false);
         add(splitPane);
     }
-    private void createDraggableButton(Event event) {
+    private void createDraggableButton(Event event,int x,int y) {
         JButton newButton = new JButton(event.getName());
+        newButton.setLocation(x,y);
         newButton.setSize(150, 30);
         newButton.setBackground(event.getColor());
         // Add mouse listener for dragging
@@ -253,6 +254,8 @@ public class GUI extends JFrame {
                     Point newPoint = e.getLocationOnScreen();
                     newButton.setLocation(newButton.getX() + (newPoint.x - lastPoint.x),
                             newButton.getY() + (newPoint.y - lastPoint.y));
+                    event.setX(newButton.getX());
+                    event.setY(newButton.getY());
                 }
                 lastPoint = e.getLocationOnScreen();
             }
@@ -315,9 +318,11 @@ public class GUI extends JFrame {
                 String eventName = eventInput.getText();
                 Color eventColor = colors[eventColorChoices.getSelectedIndex()];
                 if (!eventName.isEmpty()) {
-                    Event newEvent = new Event(eventName, eventColor);
+                    Event newEvent = new Event(eventName, eventColor,0,0);
+                    JButton tmpButton;
                     events.add(newEvent);
-                    createDraggableButton(newEvent);
+                    createDraggableButton(newEvent,0,0);
+
                 }
             }
         }
@@ -383,9 +388,9 @@ public class GUI extends JFrame {
                 if(nowSelected!=null){
                    // nowSelected.setDrawingColor();
                    // nowSelected.setName();
-                    Event newEvent=new Event(renamedTextField.getText(),colors[recolorChoices.getSelectedIndex()]);
+                    Event newEvent=new Event(renamedTextField.getText(),colors[recolorChoices.getSelectedIndex()],0,0);
                     events.add(newEvent);
-                    createDraggableButton(newEvent);
+                    createDraggableButton(newEvent,newEvent.getX(),newEvent.getY());
                     deleteEvent(nowSelected);
                     nowSelected=null;
                     choicesTextField.setText("no selecting");
@@ -461,6 +466,9 @@ public class GUI extends JFrame {
                     File selectedFile = fileChooser.getSelectedFile();
                     readFile(selectedFile);
                     */
+                    for(Event ee:events){
+                        createDraggableButton(ee,ee.getX(),ee.getY());
+                    }
                 }
             }
         }
