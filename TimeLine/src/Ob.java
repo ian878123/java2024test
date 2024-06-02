@@ -1,4 +1,4 @@
-public abstract class Ob {
+public abstract class Ob implements java.io.Serializable{
     String describe="";
     public abstract String getName() ;
     public void setDescribe(String s){

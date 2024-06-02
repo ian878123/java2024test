@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Label {
+public class Label implements java.io.Serializable{
     private final String name;
     private final ArrayList<Ob> members=new ArrayList<>();
     Label(String name){
