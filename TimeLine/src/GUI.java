@@ -503,6 +503,12 @@ public class GUI extends JFrame {
                     for(Event ee:events){
                         createDraggableButton(ee,ee.getX(),ee.getY());
                     }
+                    objectTagModel.removeElementAt(0);
+                    eventModel.removeElementAt(0);
+                    for(Label tag:tags){
+                        objectTagModel.addElement(tag.getName());
+                        eventModel.addElement(tag.getName());
+                    }
                 }
             }
         }
