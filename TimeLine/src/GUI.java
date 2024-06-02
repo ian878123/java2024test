@@ -352,10 +352,6 @@ public class GUI extends JFrame {
                     newPeople.addTag(tags.get(objectTagChoices.getSelectedIndex()));
                     Obs.add(newPeople);
 
-                    if(objectNames.size()==1){
-                        objectNames.remove(0);
-                        objectModel.removeElementAt(0);
-                    }
                     objectNames.add(objectInput.getText());
                     objectModel.addElement("P:"+newPeople.getName());
                     tags.get(objectTagChoices.getSelectedIndex()).newMember(newPeople);
@@ -368,10 +364,7 @@ public class GUI extends JFrame {
                     frame.setVisible(true);
                     newRes.addTag(tags.get(objectTagChoices.getSelectedIndex()));
                     Obs.add(newRes);
-                    if(Objects.equals(objectNames.get(1), "請選擇物件")){
-                        objectNames.remove(0);
-                        objectModel.removeElementAt(0);
-                    }
+
                     objectNames.add(objectInput.getText());
                     objectModel.addElement("R:"+newRes.getName());
                     tags.get(objectTagChoices.getSelectedIndex()).newMember(newRes);
@@ -390,18 +383,17 @@ public class GUI extends JFrame {
                 newSearchGUI.setVisible(true);
             }
             else if (e.getSource()==insertButton) {
-                if(objectChoices.getSelectedIndex()==0){
-                    JOptionPane.showMessageDialog(null,"請選擇物件");
+                if(nowSelected==null){
+                    JOptionPane.showMessageDialog(null,"請選擇事件");
                 }
                 else{
-                    Label la = tags.get(tagChoices.getSelectedIndex());
-                    Ob ob = Obs.get(objectChoices.getSelectedIndex()-1);
-                    la.newMember(ob);
-                    if(ob instanceof People){
-                        ((People) ob).addTag(la);
+                    Ob tmp;
+                    tmp=Obs.get(objectChoices.getSelectedIndex()-1);
+                    if(tmp instanceof People){
+                        nowSelected.addNewMember((People) tmp);
                     }
-                    else if(ob instanceof Res){
-                        ((Res) ob).addTag(la);
+                    else if(tmp instanceof Res){
+                        nowSelected.addNewMember((Res) tmp);
                     }
                 }
             }

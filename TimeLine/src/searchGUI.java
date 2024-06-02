@@ -93,6 +93,7 @@ public class searchGUI  extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e){
             eve.setDescribe(jTextField.getText());
+            dispose();
         }
     }
 }
