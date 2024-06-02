@@ -9,6 +9,8 @@ public class Event implements java.io.Serializable{
     private int x;
     private int y;
     private String describe="";
+    private ArrayList<String> connectedEventNames = new ArrayList<>(); // List of connected event names
+
     Event(String n, Color c,int xx,int yy){
         name=n;
         color=c;
@@ -53,4 +55,12 @@ public class Event implements java.io.Serializable{
 
     public void deleteMember(People p){peoples.remove(p);}
     public void deleteMember(Res r){res.remove(r);}
+
+    public void addConnectedEvent(String eventName) {
+        connectedEventNames.add(eventName);
+    }
+
+    public ArrayList<String> getConnectedEventNames() {
+        return connectedEventNames;
+    }
 }

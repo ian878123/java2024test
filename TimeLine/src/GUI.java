@@ -328,6 +328,14 @@ public class GUI extends JFrame {
                             JButton btn1 = selectedButtons.get(selectedButtons.size() - 2);
                             JButton btn2 = selectedButtons.get(selectedButtons.size() - 1);
                             lines.add(new Line(btn1, btn2));
+                            // Add connected event names to each event
+                            Event event1 = getEventByName(btn1.getText());
+                            Event event2 = getEventByName(btn2.getText());
+                            if (event1 != null && event2 != null) {
+                                event1.addConnectedEvent(event2.getName());
+                                event2.addConnectedEvent(event1.getName());
+                            }
+
                             selectedButtons.clear(); // Clear selection after drawing the line
                         }
                     } else {
@@ -387,6 +395,14 @@ public class GUI extends JFrame {
         leftPanel.add(newButton);
         leftPanel.repaint();
         leftPanel.revalidate();
+    }
+    private Event getEventByName(String name) {
+        for (Event event : events) {
+            if (event.getName().equals(name)) {
+                return event;
+            }
+        }
+        return null;
     }
     static class CustomSeparator extends JSeparator{//建立黑線
         private Color color;
@@ -648,6 +664,19 @@ public class GUI extends JFrame {
                     for(Event ee:events){
                         createDraggableButton(ee,ee.getX(),ee.getY());
                     }
+
+                    for (Event event : events) {
+                        for (String connectedEventName : event.getConnectedEventNames()) {
+                            Event connectedEvent = getEventByName(connectedEventName);
+                            if (connectedEvent != null) {
+                                JButton btn1 = getButtonByName(event.getName());
+                                JButton btn2 = getButtonByName(connectedEvent.getName());
+                                if (btn1 != null && btn2 != null) {
+                                    lines.add(new Line(btn1, btn2));
+                                }
+                            }
+                        }
+                    }
                     objectTagModel.removeElementAt(0);
                     eventModel.removeElementAt(0);
                     for(Label tag:tags){
@@ -736,5 +765,16 @@ public class GUI extends JFrame {
         objectTagModel.removeElement(tmp);
         eventModel.removeElement(tmp);
         tags.remove(tag);
+    }
+    private JButton getButtonByName(String name) {
+        for (Component component : leftPanel.getComponents()) {
+            if (component instanceof JButton) {
+                JButton button = (JButton) component;
+                if (button.getText().equals(name)) {
+                    return button;
+                }
+            }
+        }
+        return null;
     }
 }
