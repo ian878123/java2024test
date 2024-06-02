@@ -46,6 +46,7 @@ public class GUI extends JFrame {
     private DefaultComboBoxModel<String> objectModel;
     JButton labelButton;
     JButton insertButton;
+    JButton insertTagButton;
     //選取事件
     private Event nowSelected=null;
     private JTextField choicesTextField;
@@ -149,7 +150,7 @@ public class GUI extends JFrame {
         objectPanel.add(new CustomSeparator(Color.BLACK, 3));objectPanel.add(new CustomSeparator(Color.BLACK, 3));
         rightPanel.add(objectPanel);
         //右:標籤查詢 與 插入物件
-        labelPanel=new JPanel(new GridLayout(4,2));
+        labelPanel=new JPanel(new GridLayout(5,2));
         labelPanel.setBackground(Color.PINK);
         eventNames=new ArrayList<>();
         eventNames.add("無隸屬");
@@ -164,10 +165,14 @@ public class GUI extends JFrame {
         objectModel=new DefaultComboBoxModel<>(objectNames.toArray(new String[0]));
         objectChoices=new JComboBox<>(objectModel);
         labelPanel.add(objectChoices);
-        insertButton=new JButton("Insert Object");
+        insertButton=new JButton("Insert to event");
         insertButton.addActionListener(new MyTagListener());
         labelPanel.add(insertButton);
-
+        JLabel jLabel=new JLabel("Add objects to tags:");
+        jLabel.setFont(new Font("Arial",Font.PLAIN,15));
+        labelPanel.add(jLabel);
+        insertTagButton=new JButton("Insert to tag");
+        labelPanel.add(insertTagButton);
         labelPanel.add(Box.createVerticalStrut(0)); labelPanel.add(Box.createVerticalStrut(0));
         labelPanel.add(new CustomSeparator(Color.BLACK, 3));labelPanel.add(new CustomSeparator(Color.BLACK, 3));
         rightPanel.add(labelPanel);
@@ -477,6 +482,9 @@ public class GUI extends JFrame {
                         }
                     }
                 }
+            }
+            else if(e.getSource()==insertTagButton){
+
             }
         }
     }
