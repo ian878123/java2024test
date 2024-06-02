@@ -230,7 +230,7 @@ public class GUI extends JFrame {
         saveButton =new JButton("Save");
         saveButton.addActionListener(new MySaveListener());
         savePanel.add(saveButton);
-        readButton =new JButton("Read");
+        readButton =new JButton("Load");
         readButton.addActionListener(new MySaveListener());
         savePanel.add(readButton);
         rightPanel.add(savePanel);
@@ -381,7 +381,20 @@ public class GUI extends JFrame {
                 newSearchGUI.setVisible(true);
             }
             else if (e.getSource()==insertButton) {
-
+                if(objectChoices.getSelectedIndex()==0){
+                    JOptionPane.showMessageDialog(null,"請選擇物件");
+                }
+                else{
+                    Label la = tags.get(tagChoices.getSelectedIndex());
+                    Ob ob = Obs.get(objectChoices.getSelectedIndex()-1);
+                    la.newMember(ob);
+                    if(ob instanceof People){
+                        ((People) ob).addTag(la);
+                    }
+                    else if(ob instanceof Res){
+                        ((Res) ob).addTag(la);
+                    }
+                }
             }
         }
     }
@@ -444,6 +457,7 @@ public class GUI extends JFrame {
             }
             else if(e.getSource()==saveButton){
                 JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setDialogTitle("儲存成專案檔案夾");
                 fileChooser.setCurrentDirectory(new java.io.File("."));//設定初始路徑
                 int result = fileChooser.showSaveDialog(GUI.this);
                 if (result == JFileChooser.APPROVE_OPTION) {
@@ -460,6 +474,7 @@ public class GUI extends JFrame {
             }
             else if(e.getSource()==readButton){
                 JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setDialogTitle("選擇專案檔案夾");
                 fileChooser.setCurrentDirectory(new java.io.File("."));//設定初始路徑
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); //設定只能選擇資料夾
                 int result = fileChooser.showOpenDialog(GUI.this);
