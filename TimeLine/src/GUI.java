@@ -318,7 +318,14 @@ public class GUI extends JFrame {
             if(e.getSource()==eventButton){
                 String eventName = eventInput.getText();
                 Color eventColor = colors[eventColorChoices.getSelectedIndex()];
-                if (!eventName.isEmpty()) {
+                boolean isNameExist = false;
+                for (Event event : events) {
+                    if (Objects.equals(event.getName(), eventName)) {
+                        isNameExist = true;
+                        break;
+                    }
+                }
+                if (!eventName.isEmpty() && !isNameExist) {
                     Event newEvent = new Event(eventName, eventColor,0,0);
                     JButton tmpButton;
                     events.add(newEvent);
@@ -327,6 +334,8 @@ public class GUI extends JFrame {
                     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     frame.setLocationRelativeTo(GUI.this);
                     frame.setVisible(true);
+                }else{
+                    JOptionPane.showMessageDialog(null,"事件已存在");
                 }
             }
         }
@@ -343,7 +352,14 @@ public class GUI extends JFrame {
                 PorR=R;
             }
             else if (e.getSource()==objectButton) {
-                if(PorR==P){
+                boolean isNameExist = false;
+                for (Ob ob : Obs) {
+                    if (Objects.equals(ob.getName(), objectInput.getText())) {
+                        isNameExist = true;
+                        break;
+                    }
+                }
+                if(PorR==P && !isNameExist){
                     People newPeople=new People(objectInput.getText());
                     describeGUI frame=new describeGUI(newPeople);
                     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -356,7 +372,7 @@ public class GUI extends JFrame {
                     objectModel.addElement("P:"+newPeople.getName());
                     tags.get(objectTagChoices.getSelectedIndex()).newMember(newPeople);
                 }
-                else{
+                else if(PorR==R && !isNameExist){
                     Res newRes=new Res(objectInput.getText());
                     describeGUI frame=new describeGUI(newRes);
                     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -368,6 +384,8 @@ public class GUI extends JFrame {
                     objectNames.add(objectInput.getText());
                     objectModel.addElement("R:"+newRes.getName());
                     tags.get(objectTagChoices.getSelectedIndex()).newMember(newRes);
+                }else{
+                    JOptionPane.showMessageDialog(null,"物件已存在");
                 }
             }
         }
@@ -448,17 +466,29 @@ public class GUI extends JFrame {
             }
         }
     }
-    private class MySaveListener implements ActionListener{//所有關於存檔讀檔的事件監聽器
+    private class MySaveListener implements ActionListener{//所有關於存檔讀檔和新建標籤的事件監聽器
         String tmp="";
         @Override
         public void actionPerformed(ActionEvent e){
+
             if(e.getSource()==newButton){
-                Label newLabel=new Label(tagTextField.getText());
-                objectTagNames.add(newLabel.getName());
-                eventNames.add(newLabel.getName());
-                objectTagModel.addElement(newLabel.getName());
-                eventModel.addElement(newLabel.getName());
-                tags.add(newLabel);
+                boolean isNameExist = false;
+                for (Label tag : tags) {
+                    if (Objects.equals(tag.getName(), tagTextField.getText())) {
+                        isNameExist = true;
+                        break;
+                    }
+                }
+                if (!isNameExist) {
+                    Label newLabel=new Label(tagTextField.getText());
+                    objectTagNames.add(newLabel.getName());
+                    eventNames.add(newLabel.getName());
+                    objectTagModel.addElement(newLabel.getName());
+                    eventModel.addElement(newLabel.getName());
+                    tags.add(newLabel);
+                }else {
+                    JOptionPane.showMessageDialog(null,"標籤已存在");
+                }
             }
             else if(e.getSource()==saveButton){
                 JFileChooser fileChooser = new JFileChooser();
