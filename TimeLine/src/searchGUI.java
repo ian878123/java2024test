@@ -38,6 +38,40 @@ public class searchGUI  extends JFrame {
         add(peoplePanel);
         add(resPanel);
     }
+    public searchGUI(Event event){
+        super(event.getName());
+        ArrayList<People> peoples=event.getPeoples();
+        ArrayList<Res> res=event.getRes();
+        setLayout(new GridLayout(3, 1));
+        JTextField jTextField=new JTextField(event.getDescribe());
+        JPanel peoplePanel=new JPanel(new FlowLayout());
+        JPanel resPanel=new JPanel(new FlowLayout());
+        JButton tmp;
+
+        JLabel peopleLabel=new JLabel("People:");
+        peoplePanel.add(peopleLabel);
+        for (Ob ob : peoples) {
+            if (ob instanceof People) {
+                tmp = new SearchButton(ob);
+                tmp.addActionListener(new buttonListener());
+                peoplePanel.add(tmp);
+            }
+        }
+
+        JLabel resLabel=new JLabel("Res:");
+        resPanel.add(resLabel);
+        for (Ob ob : res) {
+            if (ob instanceof Res) {
+                tmp = new SearchButton(ob);
+                tmp.addActionListener(new buttonListener());
+                resPanel.add(tmp);
+            }
+        }
+
+        add(jTextField);
+        add(peoplePanel);
+        add(resPanel);
+    }
     private class buttonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e){
