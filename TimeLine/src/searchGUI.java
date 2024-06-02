@@ -7,6 +7,8 @@ import java.util.ArrayList;
 public class searchGUI  extends JFrame {
     private People p;
     private Res r;
+    private Event eve;
+    private JTextField jTextField;
     public searchGUI(Label tag){
         super(tag.getName());
         ArrayList<Ob> obs=tag.getMembers();
@@ -40,10 +42,11 @@ public class searchGUI  extends JFrame {
     }
     public searchGUI(Event event){
         super(event.getName());
+        eve=event;
         ArrayList<People> peoples=event.getPeoples();
         ArrayList<Res> res=event.getRes();
-        setLayout(new GridLayout(3, 1));
-        JTextField jTextField=new JTextField(event.getDescribe());
+        setLayout(new GridLayout(4, 1));
+        jTextField=new JTextField(event.getDescribe());
         JPanel peoplePanel=new JPanel(new FlowLayout());
         JPanel resPanel=new JPanel(new FlowLayout());
         JButton tmp;
@@ -67,10 +70,13 @@ public class searchGUI  extends JFrame {
                 resPanel.add(tmp);
             }
         }
+        JButton jButton=new JButton("改敘述");
+        jButton.addActionListener(new describeListener());
 
         add(jTextField);
         add(peoplePanel);
         add(resPanel);
+        add(jButton);
     }
     private class buttonListener implements ActionListener {
         @Override
@@ -81,6 +87,12 @@ public class searchGUI  extends JFrame {
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setLocationRelativeTo(searchGUI.this);
             frame.setVisible(true);
+        }
+    }
+    private class describeListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e){
+            eve.setDescribe(jTextField.getText());
         }
     }
 }
