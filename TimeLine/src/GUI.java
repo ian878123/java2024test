@@ -407,11 +407,13 @@ public class GUI extends JFrame {
                 else{
                     Ob tmp;
                     tmp=Obs.get(objectChoices.getSelectedIndex()-1);
-                    if(tmp instanceof People){
-                        nowSelected.addNewMember((People) tmp);
-                    }
-                    else if(tmp instanceof Res){
-                        nowSelected.addNewMember((Res) tmp);
+                    if(objectChoices.getSelectedIndex()>0){//確保選到"請選擇物件"時不會報錯
+                        if(tmp instanceof People){
+                            nowSelected.addNewMember((People) tmp);
+                        }
+                        else if(tmp instanceof Res){
+                            nowSelected.addNewMember((Res) tmp);
+                        }
                     }
                 }
             }
@@ -531,6 +533,12 @@ public class GUI extends JFrame {
                     for(Event ee:events){
                         createDraggableButton(ee,ee.getX(),ee.getY());
                     }
+                    objectTagModel.removeElementAt(0);
+                    eventModel.removeElementAt(0);
+                    for(Label tag:tags){
+                        objectTagModel.addElement(tag.getName());
+                        eventModel.addElement(tag.getName());
+                    }
                 }
             }
         }
@@ -585,6 +593,9 @@ public class GUI extends JFrame {
             for(Label t:((People) ob).getTagsIn()){
                 t.deleteMember(ob);
             }
+            for(Event e:((People) ob).getEventsIn()){
+                e.deleteMember((People)ob);
+            }
             Obs.remove(ob);
             objectNames.remove(tmp);
             objectModel.removeElement("P:"+tmp);
@@ -593,6 +604,9 @@ public class GUI extends JFrame {
             String tmp=ob.getName();
             for(Label t:((Res) ob).getTagsIn()){
                 t.deleteMember(ob);
+            }
+            for(Event e:((Res) ob).getEventsIn()){
+                e.deleteMember((Res)ob);
             }
             Obs.remove(ob);
             objectNames.remove(tmp);

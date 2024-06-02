@@ -50,4 +50,7 @@ public class Event implements java.io.Serializable{
         describe=s;
     }
     public String getDescribe(){return describe;}
+
+    public void deleteMember(People p){peoples.remove(p);}
+    public void deleteMember(Res r){res.remove(r);}
 }
