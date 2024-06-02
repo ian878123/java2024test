@@ -469,8 +469,9 @@ public class GUI extends JFrame {
                 int result = fileChooser.showSaveDialog(GUI.this);
                 if (result == JFileChooser.APPROVE_OPTION) {
                     System.out.println("getSelectedFile(): " + fileChooser.getSelectedFile());
-                    Saving.save(events, fileChooser.getSelectedFile());
-
+                    Saving.SaveEvent(events, fileChooser.getSelectedFile());
+                    Saving.SaveLable(tags, fileChooser.getSelectedFile());
+                    Saving.SaveOb(Obs, fileChooser.getSelectedFile());
                     /*
                     File selectedFile = fileChooser.getSelectedFile();
                     if (!selectedFile.getAbsolutePath().toLowerCase().endsWith(".txt")) {
@@ -488,7 +489,9 @@ public class GUI extends JFrame {
                 int result = fileChooser.showOpenDialog(GUI.this);
                 if (result == JFileChooser.APPROVE_OPTION) {
                     System.out.println("getSelectedFile(): " + fileChooser.getSelectedFile());
-                    events=Loading.Load(fileChooser.getSelectedFile());
+                    events=Loading.LoadEvent(fileChooser.getSelectedFile());
+                    Obs=Loading.LoadOb(fileChooser.getSelectedFile());
+                    tags=Loading.LoadLabel(fileChooser.getSelectedFile());
                     /*
                     File selectedFile = fileChooser.getSelectedFile();
                     readFile(selectedFile);
