@@ -389,11 +389,13 @@ public class GUI extends JFrame {
                 else{
                     Ob tmp;
                     tmp=Obs.get(objectChoices.getSelectedIndex()-1);
-                    if(tmp instanceof People){
-                        nowSelected.addNewMember((People) tmp);
-                    }
-                    else if(tmp instanceof Res){
-                        nowSelected.addNewMember((Res) tmp);
+                    if(objectChoices.getSelectedIndex()>0){//確保選到"請選擇物件"時不會報錯
+                        if(tmp instanceof People){
+                            nowSelected.addNewMember((People) tmp);
+                        }
+                        else if(tmp instanceof Res){
+                            nowSelected.addNewMember((Res) tmp);
+                        }
                     }
                 }
             }
@@ -468,6 +470,7 @@ public class GUI extends JFrame {
                 if (result == JFileChooser.APPROVE_OPTION) {
                     System.out.println("getSelectedFile(): " + fileChooser.getSelectedFile());
                     Saving.save(events, fileChooser.getSelectedFile());
+
                     /*
                     File selectedFile = fileChooser.getSelectedFile();
                     if (!selectedFile.getAbsolutePath().toLowerCase().endsWith(".txt")) {
@@ -551,6 +554,9 @@ public class GUI extends JFrame {
             for(Label t:((People) ob).getTagsIn()){
                 t.deleteMember(ob);
             }
+            for(Event e:((People) ob).getEventsIn()){
+                e.deleteMember((People)ob);
+            }
             Obs.remove(ob);
             objectNames.remove(tmp);
             objectModel.removeElement("P:"+tmp);
@@ -559,6 +565,9 @@ public class GUI extends JFrame {
             String tmp=ob.getName();
             for(Label t:((Res) ob).getTagsIn()){
                 t.deleteMember(ob);
+            }
+            for(Event e:((Res) ob).getEventsIn()){
+                e.deleteMember((Res)ob);
             }
             Obs.remove(ob);
             objectNames.remove(tmp);
