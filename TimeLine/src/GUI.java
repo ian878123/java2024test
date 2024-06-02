@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.util.Objects;
 
 public class GUI extends JFrame {
     //base
@@ -284,7 +285,6 @@ public class GUI extends JFrame {
                     Point releasePoint = e.getPoint();
                     if (initialClick.distance(releasePoint) < 5) { // Check if the distance is within 5 pixels
                         nowSelected=event;
-                        JOptionPane.showMessageDialog(GUI.this, "注意看右邊灰色部分，可以用nowSelected來使用那個事件");
                         choicesTextField.setText(nowSelected.getName());
                     }
                 }
@@ -351,6 +351,11 @@ public class GUI extends JFrame {
                     frame.setVisible(true);
                     newPeople.addTag(tags.get(objectTagChoices.getSelectedIndex()));
                     Obs.add(newPeople);
+
+                    if(objectNames.size()==1){
+                        objectNames.remove(0);
+                        objectModel.removeElementAt(0);
+                    }
                     objectNames.add(objectInput.getText());
                     objectModel.addElement("P:"+newPeople.getName());
                     tags.get(objectTagChoices.getSelectedIndex()).newMember(newPeople);
@@ -363,6 +368,10 @@ public class GUI extends JFrame {
                     frame.setVisible(true);
                     newRes.addTag(tags.get(objectTagChoices.getSelectedIndex()));
                     Obs.add(newRes);
+                    if(Objects.equals(objectNames.get(1), "請選擇物件")){
+                        objectNames.remove(0);
+                        objectModel.removeElementAt(0);
+                    }
                     objectNames.add(objectInput.getText());
                     objectModel.addElement("R:"+newRes.getName());
                     tags.get(objectTagChoices.getSelectedIndex()).newMember(newRes);
@@ -417,7 +426,11 @@ public class GUI extends JFrame {
                 }
             }
             else if(e.getSource()==checkButton){
-                JOptionPane.showMessageDialog(null,"CHECK");
+                searchGUI newSearchGUI=new searchGUI(nowSelected);
+                newSearchGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                newSearchGUI.setSize(350,300);
+                newSearchGUI.setLocationRelativeTo(GUI.this);
+                newSearchGUI.setVisible(true);
             }
             else if(e.getSource()==deleteButton){
                 if(deleteChoices.getSelectedIndex()==0){
