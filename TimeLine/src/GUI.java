@@ -144,6 +144,7 @@ public class GUI extends JFrame {
         labelButton.addActionListener(new MyTagListener());
         labelPanel.add(labelButton);
         objectNames=new ArrayList<>();
+        objectNames.add("請選擇物件");
         objectModel=new DefaultComboBoxModel<>(objectNames.toArray(new String[0]));
         objectChoices=new JComboBox<>(objectModel);
         labelPanel.add(objectChoices);
@@ -322,7 +323,10 @@ public class GUI extends JFrame {
                     JButton tmpButton;
                     events.add(newEvent);
                     createDraggableButton(newEvent,0,0);
-
+                    describeGUI frame=new describeGUI(newEvent);
+                    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    frame.setLocationRelativeTo(GUI.this);
+                    frame.setVisible(true);
                 }
             }
         }
@@ -388,7 +392,7 @@ public class GUI extends JFrame {
                 if(nowSelected!=null){
                    // nowSelected.setDrawingColor();
                    // nowSelected.setName();
-                    Event newEvent=new Event(renamedTextField.getText(),colors[recolorChoices.getSelectedIndex()],0,0);
+                    Event newEvent=new Event(renamedTextField.getText(),colors[recolorChoices.getSelectedIndex()],nowSelected.getX(),nowSelected.getY());
                     events.add(newEvent);
                     createDraggableButton(newEvent,newEvent.getX(),newEvent.getY());
                     deleteEvent(nowSelected);

@@ -8,6 +8,7 @@ public class Event implements java.io.Serializable{
     private String name;
     private int x;
     private int y;
+    private String describe="";
     Event(String n, Color c,int xx,int yy){
         name=n;
         color=c;
@@ -44,4 +45,9 @@ public class Event implements java.io.Serializable{
     public int getX(){return x;}
 
     public int getY(){return y;}
+
+    public void setDescribe(String s){
+        describe=s;
+    }
+    public String getDescribe(){return describe;}
 }
