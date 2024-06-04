@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 public class describeGUI extends JFrame {
     private Ob nowOb;
     private Event nowEvent;
-    private final JTextField describe;
+    private final JTextArea describe;
     private int ObOrEvent;
     private int OB=0;
     private int EVENT=1;
@@ -24,7 +24,7 @@ public class describeGUI extends JFrame {
         jLabel.setFont(new Font("標楷體",Font.PLAIN,30));
         add(jLabel);
 
-        describe=new JTextField(ob.getDescribe());
+        describe=new JTextArea(ob.getDescribe());
         describe.setPreferredSize(new Dimension(250,300));
         add(describe);
 
@@ -46,7 +46,7 @@ public class describeGUI extends JFrame {
         jLabel.setFont(new Font("標楷體",Font.PLAIN,30));
         add(jLabel);
 
-        describe=new JTextField(event.getDescribe());
+        describe=new JTextArea(event.getDescribe());
         describe.setPreferredSize(new Dimension(250,300));
         add(describe);
 

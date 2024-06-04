@@ -8,7 +8,7 @@ public class searchGUI  extends JFrame {
     private People p;
     private Res r;
     private Event eve;
-    private JTextField jTextField;
+    private JTextArea jTextField;
     public searchGUI(Label tag){
         super(tag.getName());
         ArrayList<Ob> obs=tag.getMembers();
@@ -46,7 +46,7 @@ public class searchGUI  extends JFrame {
         ArrayList<People> peoples=event.getPeoples();
         ArrayList<Res> res=event.getRes();
         setLayout(new GridLayout(4, 1));
-        jTextField=new JTextField(event.getDescribe());
+        jTextField=new JTextArea(event.getDescribe());
         JPanel peoplePanel=new JPanel(new FlowLayout());
         JPanel resPanel=new JPanel(new FlowLayout());
         JButton tmp;
