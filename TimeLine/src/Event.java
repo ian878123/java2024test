@@ -19,10 +19,20 @@ public class Event implements java.io.Serializable{
     }
 
     public void addNewMember(People p){
+        for(People pe:peoples){
+            if(pe.getName().equals(p.getName())){
+                return;
+            }
+        }
         peoples.add(p);
     }
 
     public void addNewMember(Res r){
+        for(Res re:res){
+            if(re.getName().equals(r.getName())){
+                return;
+            }
+        }
         res.add(r);
     }
 

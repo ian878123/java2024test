@@ -11,9 +11,9 @@ public class GUI extends JFrame {
     private Label noAffiliation=new Label("Default");
     private JPanel labelPanel;
     private ArrayList<String> tagNames;
-    private final String[] colorNames = { "Blue", "Cyan", "Gray", "Green", "Magenta", "Orange", "Pink", "Red", "Yellow", "White", "Black" };
+    private final String[] colorNames = { "Cyan", "Blue", "Gray", "Green", "Magenta", "Orange", "Pink", "Red", "Yellow", "White"};
     private final String[] deleteNames={"Event","Object","Tag"};
-    private final Color[] colors={Color.BLUE,Color.CYAN,Color.GRAY,Color.GREEN,Color.MAGENTA,Color.ORANGE,Color.PINK,Color.RED,Color.YELLOW,Color.WHITE,Color.BLACK};
+    private final Color[] colors={Color.CYAN,Color.BLUE,Color.GRAY,Color.GREEN,Color.MAGENTA,Color.ORANGE,Color.PINK,Color.RED,Color.YELLOW,Color.WHITE};
     private ArrayList<Event> events=new ArrayList<>();
     private ArrayList<Ob> Obs=new ArrayList<>();
     private int eventCount=0;
@@ -503,7 +503,7 @@ public class GUI extends JFrame {
                     if (initialClick.distance(releasePoint) < 5) { // Check if the distance is within 5 pixels
                         nowSelected=event;
                         String name = nowSelected.getName();
-                        new UpdateEventGUI(nowSelected,Obs,tags);
+                        new UpdateEventGUI(nowSelected,Obs,tags,leftPanel);
                         //choicesTextField.setText(nowSelected.getName());
                     }
                 }
