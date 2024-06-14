@@ -69,6 +69,10 @@ public class deleteGUI extends JFrame{
         public void actionPerformed(ActionEvent e){
             Button clickedButton = (Button) e.getSource();
             int eventIndex = clickedButton.getNum();
+            if(TAG.get(eventIndex).getName().equals("Default")){
+                JOptionPane.showMessageDialog(null, "Default tag cannot be deleted");
+                return;
+            }
             clickedButton.getGUI().deleteTag(TAG.get(eventIndex));
             dispose();
         }

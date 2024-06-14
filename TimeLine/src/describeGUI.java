@@ -18,6 +18,7 @@ public class describeGUI extends JFrame {
         setUndecorated(true);
         setUndecorated(true);
         setLayout(new FlowLayout());
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         getContentPane().setBackground(Color.PINK);
         JLabel jLabel=new JLabel("敘述:");
@@ -31,6 +32,7 @@ public class describeGUI extends JFrame {
         JButton jButton=new JButton("確認");
         jButton.addActionListener(new buttonListener());
         add(jButton);
+        setVisible(true);
     }
     describeGUI(Event event){
         super(event.getName());

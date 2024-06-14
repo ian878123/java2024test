@@ -12,6 +12,11 @@ public class Label implements java.io.Serializable{
     }
 
     public void newMember(Ob member){
+        for(Ob m:members){
+            if(m.getName().equals(member.getName())){
+                return;
+            }
+        }
         members.add(member);
     }
 

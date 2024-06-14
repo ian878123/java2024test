@@ -8,9 +8,19 @@ public class Res extends Ob{
         this.name=name;
     }
     public void addEvent(Event e){
+        for(Event ev:eventsIn){
+            if(ev.getName().equals(e.getName())){
+                return;
+            }
+        }
         eventsIn.add(e);
     }
     public void addTag(Label tag){
+        for(Label t:tagsIn){
+            if(t.getName().equals(tag.getName())){
+                return;
+            }
+        }
         tagsIn.add(tag);
     }
     public void deleteRelationship(Event e){

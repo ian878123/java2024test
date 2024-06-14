@@ -1,21 +1,14 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.util.ArrayList;
 import javax.swing.*;
-import javax.swing.event.MouseInputListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.util.Objects;
 import java.util.HashSet;
 
 public class GUI extends JFrame {
     //base
     private ArrayList<Label> tags=new ArrayList<>();
-    private Label noAffiliation=new Label("無隸屬");
+    private Label noAffiliation=new Label("Default");
     private JPanel labelPanel;
     private ArrayList<String> tagNames;
     private final String[] colorNames = { "Blue", "Cyan", "Gray", "Green", "Magenta", "Orange", "Pink", "Red", "Yellow", "White", "Black" };
@@ -28,6 +21,11 @@ public class GUI extends JFrame {
     private JTextField eventInput;
     private JComboBox<String> eventColorChoices;
     private JButton eventButton;
+    private JButton newEventButton;
+    private JButton confirmButton;
+    private JTextField eventName;
+    private JTextField eventText;
+    private JFrame newFrame;
     //添加物件
     private JTextField objectInput;
     private JRadioButton peopleButton;
@@ -37,6 +35,10 @@ public class GUI extends JFrame {
     private DefaultComboBoxModel<String> objectTagModel;
     private JButton objectButton;
     private int PorR=1;
+    private JButton newObjectButton;
+    private JTextField objectName;
+    private JTextField objectText;
+
     //標籤查詢
     private JComboBox<String> tagChoices;
     private ArrayList<String> eventNames;
@@ -47,6 +49,9 @@ public class GUI extends JFrame {
     JButton labelButton;
     JButton insertButton;
     JButton insertTagButton;
+    private JButton newTagButton;
+    private JButton searchButton;
+
     //選取事件
     private Event nowSelected=null;
     private JTextField choicesTextField;
@@ -54,17 +59,28 @@ public class GUI extends JFrame {
     JComboBox<String>  recolorChoices;
     JButton updateButton;
     JButton checkButton;
+
+    //刪除
     private JComboBox<String> deleteChoices;
     private JButton deleteButton;
+    private JRadioButton eventR;
+    private JRadioButton objectR;
+    private JRadioButton tagR;
+
     //新建標籤 與 讀黨存檔
     private JTextField tagTextField;
-    private JButton readButton;
+    private JButton loadButton;
     private JButton newButton;
     private JButton saveButton;
     //拖曳需要所以獨立出來
     private JPanel leftPanel;
     private ArrayList<JButton> selectedButtons = new ArrayList<>(); // To store selected buttons
     private HashSet<Line> lines = new HashSet<>(); // To store lines
+
+    private void Layer1(){
+
+    }
+
     //GUI constructor
     public GUI(){
         //GUI建立
@@ -92,9 +108,106 @@ public class GUI extends JFrame {
 
         //右側GUI
         JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new GridLayout(6,1));
-        rightPanel.setBackground(Color.PINK);
+        rightPanel.setLayout(new GridLayout(6,1,0,10));
+        rightPanel.setBackground(Color.darkGray);
+
+        newEventButton = new JButton("New Event");
+        newObjectButton = new JButton("New Object");
+        newTagButton = new JButton("New Tag");
+        searchButton = new JButton("Object Search and Update");
+        deleteButton = new JButton("Delete");
+        saveButton = new JButton("Save");
+        loadButton = new JButton("Load");
+
+        newEventButton.setFocusable(false);
+        newObjectButton.setFocusable(false);
+        newTagButton.setFocusable(false);
+        saveButton.setFocusable(false);
+        loadButton.setFocusable(false);
+        searchButton.setFocusable(false);
+        deleteButton.setFocusable(false);
+
+        newEventButton.setFont(new Font("Arial",Font.BOLD,25));
+        newObjectButton.setFont(new Font("Arial",Font.BOLD,25));
+        newTagButton.setFont(new Font("Arial",Font.BOLD,25));
+        saveButton.setFont(new Font("Arial",Font.BOLD,25));
+        loadButton.setFont(new Font("Arial",Font.BOLD,25));
+        searchButton.setFont(new Font("Arial",Font.BOLD,25));
+        deleteButton.setFont(new Font("Arial",Font.BOLD,25));
+
+        newEventButton.setBackground(Color.white);
+        newEventButton.setForeground(Color.black);
+        newObjectButton.setBackground(Color.white);
+        newObjectButton.setForeground(Color.black);
+        newTagButton.setBackground(Color.white);
+        newTagButton.setForeground(Color.black);
+        saveButton.setBackground(Color.white);
+        saveButton.setForeground(Color.black);
+        loadButton.setBackground(Color.white);
+        loadButton.setForeground(Color.black);
+        searchButton.setBackground(Color.white);
+        searchButton.setForeground(Color.black);
+        deleteButton.setBackground(Color.white);
+        deleteButton.setForeground(Color.black);
+
+        JPanel deletePanel = new JPanel();
+        JPanel deletePanel2 = new JPanel();
+        eventR = new JRadioButton("Event");
+        objectR = new JRadioButton("Object");
+        tagR = new JRadioButton("Tag");
+        eventR.setFont(new Font("Arial",Font.PLAIN,20));
+        objectR.setFont(new Font("Arial",Font.PLAIN,20));
+        tagR.setFont(new Font("Arial",Font.PLAIN,20));
+        ButtonGroup deleteGroup = new ButtonGroup();
+        deleteGroup.add(eventR);
+        deleteGroup.add(objectR);
+        deleteGroup.add(tagR);
+        deletePanel.setLayout(new GridLayout(1,3));
+        deletePanel.add(eventR);
+        deletePanel.add(objectR);
+        deletePanel.add(tagR);
+        deletePanel2.setLayout(new BorderLayout());
+        deletePanel2.add(deletePanel,BorderLayout.NORTH);
+        deletePanel2.add(deleteButton,BorderLayout.CENTER);
+
+        JLabel saveLabel = new JLabel();
+        saveLabel.setLayout(new GridLayout(1,2));
+        saveLabel.add(saveButton);
+        saveLabel.add(loadButton);
+
+        newEventButton.addActionListener(new MyEventListener());
+        newObjectButton.addActionListener(new MyObjectListener());
+        newTagButton.addActionListener(new MySaveListener());
+        saveButton.addActionListener(new MySaveListener());
+        loadButton.addActionListener(new MySaveListener());
+        searchButton.addActionListener(new MyTagListener());
+        deleteButton.addActionListener(new MyChoicesListener());
+
+
+        rightPanel.add(newEventButton);
+        rightPanel.add(newObjectButton);
+        rightPanel.add(newTagButton);
+        rightPanel.add(searchButton);
+        rightPanel.add(deletePanel2);
+        rightPanel.add(saveLabel);
+
+
+        objectTagNames=new ArrayList<>();
+        objectTagNames.add("Default");
+        objectTagModel=new DefaultComboBoxModel<>(objectTagNames.toArray(new String[0]));
+
+        objectNames=new ArrayList<>();
+        objectNames.add("請選擇物件");
+        objectModel=new DefaultComboBoxModel<>(objectNames.toArray(new String[0]));
+        objectChoices=new JComboBox<>(objectModel);
+
+        eventNames=new ArrayList<>();
+        eventNames.add("Default");
+
+        eventModel=new DefaultComboBoxModel<>(objectTagNames.toArray(new String[0]));
+        tagChoices=new JComboBox<>(eventModel);
         //右:新事件
+        /*
         JPanel eventPanel=new JPanel(new GridLayout(5,2));
         eventPanel.add(Box.createVerticalStrut(0)); eventPanel.add(Box.createVerticalStrut(0));
         eventPanel.setBackground(Color.PINK);
@@ -153,7 +266,7 @@ public class GUI extends JFrame {
         objectPanel.add(peopleButton);
         objectPanel.add(resButton);
         objectTagNames=new ArrayList<>();
-        objectTagNames.add("無隸屬");
+        objectTagNames.add("Default");
         objectTagModel=new DefaultComboBoxModel<>(objectTagNames.toArray(new String[0]));
         objectTagChoices=new JComboBox<>(objectTagModel);
         objectPanel.add(objectTagChoices);
@@ -167,7 +280,7 @@ public class GUI extends JFrame {
         labelPanel=new JPanel(new GridLayout(5,2));
         labelPanel.setBackground(Color.PINK);
         eventNames=new ArrayList<>();
-        eventNames.add("無隸屬");
+        eventNames.add("Default");
         eventModel=new DefaultComboBoxModel<>(objectTagNames.toArray(new String[0]));
         tagChoices=new JComboBox<>(eventModel);
         labelPanel.add(tagChoices);
@@ -284,6 +397,8 @@ public class GUI extends JFrame {
         readButton.addActionListener(new MySaveListener());
         savePanel.add(readButton);
         rightPanel.add(savePanel);
+
+         */
         //設定8:2畫面分割
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
         splitPane.setDividerLocation((int) (screenSize.width * 0.8));
@@ -311,6 +426,7 @@ public class GUI extends JFrame {
             return new Point(btn2.getX() + btn2.getWidth() / 2, btn2.getY() + btn2.getHeight() / 2);
         }
     }
+
     private void createDraggableButton(Event event,int x,int y) {
         JButton newButton = new JButton(event.getName());
         newButton.setLocation(x,y);
@@ -386,7 +502,9 @@ public class GUI extends JFrame {
                     Point releasePoint = e.getPoint();
                     if (initialClick.distance(releasePoint) < 5) { // Check if the distance is within 5 pixels
                         nowSelected=event;
-                        choicesTextField.setText(nowSelected.getName());
+                        String name = nowSelected.getName();
+                        new UpdateEventGUI(nowSelected,Obs,tags);
+                        //choicesTextField.setText(nowSelected.getName());
                     }
                 }
             }
@@ -424,6 +542,53 @@ public class GUI extends JFrame {
     class MyEventListener implements ActionListener {//所有關於建立新事件的事件監聽器
         @Override
         public void actionPerformed(ActionEvent e){
+
+            if(e.getSource()== newEventButton){
+                newFrame =new JFrame("Add Event");
+                newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                newFrame.setSize(400,400);
+                newFrame.setLocationRelativeTo(GUI.this);
+                newFrame.setVisible(true);
+                newFrame.setLayout(new GridLayout(4,2,10,10));
+
+                confirmButton=new JButton("Confirm");
+                confirmButton.addActionListener(new MyEventListener());
+                eventName =new JTextField();
+                eventText =new JTextField();
+                eventColorChoices=new JComboBox<>(colorNames);
+                JLabel eventNameLabel=new JLabel("Event Name:");
+                JLabel eventTextLabel=new JLabel("Event Text:");
+                JLabel eventColorLabel=new JLabel("Event Color:");
+
+                newFrame.add(eventNameLabel);
+                newFrame.add(eventName);
+                newFrame.add(eventTextLabel);
+                newFrame.add(eventText);
+                newFrame.add(eventColorLabel);
+                newFrame.add(eventColorChoices);
+                newFrame.add(confirmButton);
+                newFrame.setVisible(true);
+
+            }
+            if(e.getSource()==confirmButton){
+                boolean isNameExist = false;
+                for (Event event : events) {
+                    if (Objects.equals(event.getName(), eventName.getText())) {
+                        isNameExist = true;
+                        break;
+                    }
+                }
+                if (!eventName.getText().isEmpty() && !isNameExist) {
+                    Event newEvent = new Event(eventName.getText(), colors[eventColorChoices.getSelectedIndex()],0,0);
+                    newEvent.setDescribe(eventText.getText());
+                    events.add(newEvent);
+                    createDraggableButton(newEvent,0,0);
+                    newFrame.dispose();
+                }else{
+                    JOptionPane.showMessageDialog(null,"事件已存在");
+                }
+            }
+            /*
             if(e.getSource()==eventButton){
                 String eventName = eventInput.getText();
                 Color eventColor = colors[eventColorChoices.getSelectedIndex()];
@@ -448,6 +613,8 @@ public class GUI extends JFrame {
                 }
                 eventInput.setText("");
             }
+
+             */
         }
     }
     private class MyObjectListener implements ActionListener{//所有關於添加新物件的事件監聽器
@@ -455,6 +622,80 @@ public class GUI extends JFrame {
         final int R=0;
         @Override
         public void actionPerformed(ActionEvent e){
+            if(e.getSource()==newObjectButton){
+                newFrame =new JFrame("Add Object");
+                newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                newFrame.setSize(400,400);
+                newFrame.setLocationRelativeTo(GUI.this);
+                newFrame.setVisible(true);
+                newFrame.setLayout(new GridLayout(5,2,10,10));
+
+                confirmButton=new JButton("Confirm");
+                confirmButton.addActionListener(new MyObjectListener());
+                objectName =new JTextField();
+                objectText =new JTextField();
+                peopleButton =new JRadioButton("People",true);
+                resButton =new JRadioButton("Res",false);
+                ButtonGroup group=new ButtonGroup();
+                group.add(peopleButton);
+                group.add(resButton);
+                peopleButton.addActionListener(new MyObjectListener());
+                resButton.addActionListener(new MyObjectListener());
+                objectTagChoices=new JComboBox<>(objectTagNames.toArray(new String[0]));
+
+
+                JLabel objectNameLabel=new JLabel("Object Name:");
+                JLabel objectTextLabel=new JLabel("Object Text:");
+                JLabel objectTagLabel=new JLabel("Object Tag:");
+
+                newFrame.add(objectNameLabel);
+                newFrame.add(objectName);
+                newFrame.add(objectTextLabel);
+                newFrame.add(objectText);
+                newFrame.add(peopleButton);
+                newFrame.add(resButton);
+                newFrame.add(objectTagLabel);
+                newFrame.add(objectTagChoices);
+                newFrame.add(confirmButton);
+
+                newFrame.setVisible(true);
+            }
+            if(e.getSource()==confirmButton){
+                boolean isNameExist = false;
+                for (Ob ob : Obs) {
+                    if (Objects.equals(ob.getName(), objectName.getText())) {
+                        isNameExist = true;
+                        break;
+                    }
+                }
+                if (!objectName.getText().isEmpty() && !isNameExist) {
+                    if(peopleButton.isSelected()){
+                        People newPeople=new People(objectName.getText());
+                        newPeople.setDescribe(objectText.getText());
+                        newPeople.addTag(tags.get(objectTagChoices.getSelectedIndex()));
+
+                        Obs.add(newPeople);
+                        objectNames.add(newPeople.getName());
+                        objectModel.addElement("P:"+newPeople.getName());
+                        tags.get(objectTagChoices.getSelectedIndex()).newMember(newPeople);
+                        newFrame.dispose();
+                    }else{
+                        Res newRes=new Res(objectName.getText());
+                        newRes.setDescribe(objectText.getText());
+                        newRes.addTag(tags.get(objectTagChoices.getSelectedIndex()));
+
+                        Obs.add(newRes);
+                        objectNames.add(newRes.getName());
+                        objectModel.addElement("R:"+newRes.getName());
+                        tags.get(objectTagChoices.getSelectedIndex()).newMember(newRes);
+                        newFrame.dispose();
+                    }
+                }else{
+                    JOptionPane.showMessageDialog(null,"物件已存在");
+                }
+
+            }
+            /*
             if(e.getSource()==peopleButton){
                 PorR=P;
             }
@@ -499,11 +740,18 @@ public class GUI extends JFrame {
                 }
                 objectInput.setText("");
             }
+
+             */
         }
     }
     private class MyTagListener implements ActionListener{//所有關於查詢標籤的事件監聽器
         @Override
         public void actionPerformed(ActionEvent e){
+            if(e.getSource()==searchButton){
+                Search newSearchGUI=new Search(tags,Obs);
+                newSearchGUI.setLocationRelativeTo(GUI.this);
+
+            }
             if(e.getSource()==labelButton){
                 searchGUI newSearchGUI=new searchGUI(tags.get(tagChoices.getSelectedIndex()));
                 newSearchGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -572,14 +820,14 @@ public class GUI extends JFrame {
                 newSearchGUI.setVisible(true);
             }
             else if(e.getSource()==deleteButton){
-                if(deleteChoices.getSelectedIndex()==0){
+                if(eventR.isSelected()){
                     deleteGUI newDeleteGUI=new deleteGUI(events,GUI.this);
                     newDeleteGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     newDeleteGUI.setSize(350,300);
                     newDeleteGUI.setLocationRelativeTo(GUI.this);
                     newDeleteGUI.setVisible(true);
                 }
-                else if(deleteChoices.getSelectedIndex()==1){
+                else if(objectR.isSelected()){
                     deleteGUI newDeleteGUI=new deleteGUI(Obs,1,GUI.this);
                     newDeleteGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     newDeleteGUI.setSize(350,300);
@@ -599,7 +847,47 @@ public class GUI extends JFrame {
         String tmp="";
         @Override
         public void actionPerformed(ActionEvent e){
+            if(e.getSource()==newTagButton){
+                newFrame =new JFrame("Add Tag");
+                newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                newFrame.setSize(400,400);
+                newFrame.setLocationRelativeTo(GUI.this);
+                newFrame.setVisible(true);
+                newFrame.setLayout(new GridLayout(2,2,10,10));
 
+                confirmButton=new JButton("Confirm");
+                confirmButton.addActionListener(new MySaveListener());
+                tagTextField =new JTextField();
+                JLabel tagLabel=new JLabel("Tag Name:");
+
+                newFrame.add(tagLabel);
+                newFrame.add(tagTextField);
+                newFrame.add(confirmButton);
+                newFrame.setVisible(true);
+            }
+            if(e.getSource()==confirmButton) {
+                boolean isNameExist = false;
+
+                for (Label tag : tags) {
+                    if (Objects.equals(tag.getName(), tagTextField.getText())) {
+                        isNameExist = true;
+                        break;
+                    }
+                }
+
+                if (!tagTextField.getText().isEmpty() && !isNameExist) {
+                    Label newLabel = new Label(tagTextField.getText());
+                    objectTagNames.add(newLabel.getName());
+                    eventNames.add(newLabel.getName());
+                    objectTagModel.addElement(newLabel.getName());
+                    eventModel.addElement(newLabel.getName());
+                    tags.add(newLabel);
+                    newFrame.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "標籤已存在");
+                }
+            }
+            /*
             if(e.getSource()==newButton){
                 boolean isNameExist = false;
                 for (Label tag : tags) {
@@ -620,7 +908,9 @@ public class GUI extends JFrame {
                 }
                 tagTextField.setText("");
             }
-            else if(e.getSource()==saveButton){
+
+             */
+            if(e.getSource()==saveButton){
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setDialogTitle("儲存成專案檔案夾");
                 fileChooser.setCurrentDirectory(new java.io.File("."));//設定初始路徑
@@ -639,7 +929,7 @@ public class GUI extends JFrame {
                     */
                 }
             }
-            else if(e.getSource()==readButton){
+            else if(e.getSource()== loadButton){
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setDialogTitle("選擇專案檔案夾");
                 fileChooser.setCurrentDirectory(new java.io.File("."));//設定初始路徑
