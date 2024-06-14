@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="TimeLine:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/TimeLine_jar</output-path>
+    <root id="archive" name="TimeLine.jar">
+      <element id="module-output" name="TimeLine" />
+    </root>
+  </artifact>
+</component>

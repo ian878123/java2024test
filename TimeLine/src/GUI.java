@@ -502,9 +502,10 @@ public class GUI extends JFrame {
                     Point releasePoint = e.getPoint();
                     if (initialClick.distance(releasePoint) < 5) { // Check if the distance is within 5 pixels
                         nowSelected=event;
-                        String name = nowSelected.getName();
-                        new UpdateEventGUI(nowSelected,Obs,tags,leftPanel);
-                        //choicesTextField.setText(nowSelected.getName());
+                        if(SwingUtilities.isLeftMouseButton(e)){
+                            new UpdateEventGUI(nowSelected,Obs,tags,leftPanel);
+                        }
+
                     }
                 }
             }

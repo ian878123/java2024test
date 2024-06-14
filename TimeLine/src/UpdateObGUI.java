@@ -10,15 +10,31 @@ public class UpdateObGUI extends JFrame {
         setLayout(new BorderLayout());
 
         JPanel tagpanel = new JPanel();
-        tagpanel.setLayout(new GridLayout(3, 1, 0, 0));
+        tagpanel.setLayout(new GridLayout(6, 1, 0, 0));
         JLabel taglabel = new JLabel("Choose a tag to insert:");
         JLabel oblabel = new JLabel("Description:");
+        JLabel tagslabel = new JLabel("Tags:");
         JComboBox<String> tagList = new JComboBox<>();
         for(Label tag : tags){
             tagList.addItem(tag.getName());
         }
+
+        JPanel tagPanel = new JPanel();
+        tagPanel.setLayout(new FlowLayout());
+        if(ob instanceof People){
+            for(Label tag : ((People) ob).getTagsIn()){
+                tagPanel.add(new JLabel(tag.getName()));
+            }
+        } else if(ob instanceof Res){
+            for(Label tag : ((Res) ob).getTagsIn()){
+                tagPanel.add(new JLabel(tag.getName()));
+            }
+        }
+
         tagpanel.add(taglabel);
         tagpanel.add(tagList);
+        tagpanel.add(tagslabel);
+        tagpanel.add(tagPanel);
         tagpanel.add(oblabel);
         add(tagpanel, BorderLayout.NORTH);
 
